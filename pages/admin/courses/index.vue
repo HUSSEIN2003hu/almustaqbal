@@ -2,7 +2,7 @@
   <div class="bg-base-100 min-h-screen">
     <!-- Admin Dashboard -->
     <div class="container mx-auto p-4">
-      <!-- <div class="flex justify-between items-center mb-6">
+      <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Course Management</h1>
         <button class="btn btn-primary" @click="showNewCourseModal = true">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
@@ -12,7 +12,7 @@
           </svg>
           Add New Course
         </button>
-      </div> -->
+      </div>
 
       <!-- Course List or Detail View -->
       <div v-if="!selectedCourse">

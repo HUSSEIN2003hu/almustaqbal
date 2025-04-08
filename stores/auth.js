@@ -23,7 +23,7 @@ export const useUserStore = defineStore('user', {
           this.isAdmin = response.data.isAdmin;
           this.email = response.data.email;
         } else {
-          this.logout();
+          
         }
       } catch (error) {
         this.logout();
@@ -41,6 +41,8 @@ export const useUserStore = defineStore('user', {
     async logout() {
       try {
         await axios.post('/api/auth/logout');
+        this.isAdmin = false;
+        
       } catch (error) {
         console.error('logout error', error);
       }

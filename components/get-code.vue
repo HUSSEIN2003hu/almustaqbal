@@ -1,5 +1,5 @@
 <template>
-    <section id="contact" class="relative overflow-hidden">
+    <section id="code" class="relative overflow-hidden">
       <div class="w-full">
         <div class="container mx-auto w-full pt-12 md:pt-20 px-4 sm:px-6 lg:px-8">
           <div class="flex justify-center text-center">
@@ -68,7 +68,7 @@ const contacts = ref([
     {
       title: "واتساب",
       icon: "fa6-brands:whatsapp",
-      text: "+901 123456789",
+      text: "+964 771 234 2980",
       link: "https://wa.me/901123456789",
     },
     {

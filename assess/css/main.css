@@ -23,3 +23,15 @@ html {
 .bg-white {
   background-color: azure;
 }
+.text-white {
+  color: #fff !important;
+}
+.text-black {
+  color: #000 !important;
+}
+.text-gray-900 {
+  color: #1f2937 !important;
+}
+.text-gray-800 {
+  color: #374151 !important;
+}

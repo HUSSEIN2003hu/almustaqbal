@@ -55,7 +55,9 @@ export default defineEventHandler(async (event) => {
         uid,
         email,
         username: userData?.username,
-        courses: userData?.courses || []
+        courses: userData?.courses || [],
+        isAdmin: userData?.isAdmin || false,
+
       }
     };
 

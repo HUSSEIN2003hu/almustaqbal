@@ -27,7 +27,7 @@
                 :modules="[Navigation, Pagination]"
                 :space-between="16"
                 :centeredSlides="true"
-                :initialSlide="3"
+                :initialSlide="4"
 
                 :breakpoints="{
                     320: { slidesPerView: 2 },
@@ -48,7 +48,7 @@
                             </div>
                         </div>
                         <h2 class="text-primary text-base mt-6 font-bold mb-1">{{ teacher.name }}</h2>
-                        <div class="badge badge-primary">{{ teacher.subject }}</div>
+                        <div class="shadow-md badge border-none" :style="{ backgroundColor: teacher.color }">{{ teacher.subject }}</div>
                     </div>
                 </SwiperSlide>
             </Swiper>
@@ -66,44 +66,67 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 
 const teachers = ref([
-    {
-        name: 'أحمد علي',
-        subject: 'الرياضيات',
-        image: 'test-img.jpg',
+{
+    name: "الاستاذ محسن اسماعيل",
+    subject: "تاريخ",
+    image: "/assess/img/الأستاذ محسن أسماعيل _ تاريخ _ جغرافية _ اقتصاد.jpg",
+    color: "#FF6347"
+  },
+  {
+      name: "الاستاذ محسن اسماعيل",
+      subject: "اقتصاد",
+      image: "/assess/img/الأستاذ محسن أسماعيل _ تاريخ _ جغرافية _ اقتصاد.jpg",
+      color: "#32CD32"
     },
     {
-        name: 'محمد علي',
-        subject: 'الفيزياء',
-        image: 'test-img.jpg',
-    },
-    {
-        name: 'علي علي',
-        subject: 'الكيمياء',
-        image: 'test-img.jpg',
-    },
-    {
-        name: 'محمد محمد',
-        subject: 'اللغة العربية',
-        image: 'test-img.jpg',
-    },
-    {
-        name: 'أحمد محمد',
-        subject: 'اللغة الإنكليزية',
-        image: 'test-img.jpg',
-
-    },
-    {
-        name: 'علي أحمد',
-        subject: 'التاريخ',
-        image: 'test-img.jpg',
-    },
-    {
-        name: 'محمد أحمد',
-        subject: 'الجغرافيا',
-        image: 'test-img.jpg',
-    },
+        name: "الاستاذ حسنين اللامي",
+        subject: "كيمياء",
+    image: "/assess/img/الأستاذ  حسنين اللامي _ كيمياء.jpg",
+    color: "#1E90FF"
+  },
+  {
+    name: "الاستاذ كرار خضير العامري",
+    subject: "اللغة الانكليزية",
+    image: "/assess/img/الأستاذ  كرار خضير العامري _ اللغة الانكليزية.jpg",
+    color: "#8A2BE2"
+},
+{
+    name: "الاستاذة فاطمة الموسوي",
+    subject: "اللغة العربية",
+    image: "/assess/img/الأستاذة فاطمة الموسوي _ اللغة العربية .jpg",
+    color: "#FF4500"
+},
+{
+    name: "الاستاذ جودت نجدت",
+    subject: "رياضيات",
+    image: "/assess/img/الأستاذ جودت نجدت _ رياضيات.jpg",
+    color: "#DA70D6"
+},
+{
+    name: "الاستاذ عامر عدنان الجبوري",
+    subject: "فيزياء",
+    image: "/assess/img/الأستاذ عامرعدنان الجبوري _ فيزياء.jpg",
+    color: "#00CED1"
+  },
+  {
+    name: "لاستاذة مريم الربيعي",
+    subject: "الإسلامية",
+    image: "/assess/img/الأستاذة مريم الربيعي _ الاسلامية.jpg",
+    color: "#0FD794"
+},
+{
+    name: "الاستاذة فرح عباس",
+    subject: "احياء",
+    image: "/assess/img/الأستاذة فرح عباس _ احياء.jpg",
+    color: "#FF1493"
+},
+{
+  name: "الاستاذ محسن اسماعيل",
+  subject: "جغرافيه",
+  image: "/assess/img/الأستاذ محسن أسماعيل _ تاريخ _ جغرافية _ اقتصاد.jpg",
+  color: "#FFD700"
+},
 ]);</script>
-
 <style scoped>
 .swiper-slide {
     @apply flex justify-center items-center;

@@ -12,8 +12,8 @@
 
                 <div v-else class="space-y-8">
                     <div v-for="(teacher, index) in courses" :key="index"
-                        class="bg-secondary rounded-lg p-3 flex items-center cursor-pointer relative mt-12"
-                        :class="{ 'bg-white': selectedTeacher === teacher.id }" @click="selectTeacher(teacher.id)">
+                        class="bg-secondary text-primary rounded-lg p-3 flex items-center cursor-pointer relative mt-12"
+                        :class="{ 'bg-white text-primary': selectedTeacher === teacher.id }" @click="selectTeacher(teacher.id)">
                         <div class="badge mr-3 absolute -top-5 left-2 border-none"
                             :style="{ backgroundColor: teacher.backgroundColor }">
                             {{ teacher.department }}
@@ -22,8 +22,8 @@
                             <img :src="teacher.avatar" alt="Teacher avatar" class="w-full h-full object-cover" />
                         </div>
                         <div class="mr-3 flex-grow">
-                            <h3 class="text-slate-800 font-bold">{{ teacher.name }}</h3>
-                            <p class="text-slate-600 text-sm">عدد المحاضرات: {{ teacher.parts?.length }}</p>
+                            <h3 class="text-slate-800 text-black" style="    font-weight: 600;">{{ teacher.name }}</h3>
+                            <p class="text-slate-600 text-gray-800 text-xs">عدد المحاضرات: {{ teacher.parts?.length }}</p>
                             <div v-if="isCoursePurchased(teacher.id)"
                                 class="badge badge-success text-white text-xs mt-1 absolute -top-5 right-2">مشترك</div>
                         </div>
@@ -33,7 +33,7 @@
 
             <!-- Main Content Area -->
             <div class="lg:w-2/4">
-                <div v-if="selectedCourse && selectedEpisode" class="mb-6">
+                <div v-if="selectedCourse && selectedEpisode" class="mb-6 relative">
                     <!-- Video Player -->
                     <div class="bg-slate-800 rounded-lg overflow-hidden relative aspect-video">
                         <div ref="videoContainer" class="video-container relative w-full h-full">
@@ -42,7 +42,7 @@
                                 {{ userStore.username }} <br> {{ userStore.email }} </div>
                             <iframe v-if="currentVideoUrl" class="w-full h-full" :src="currentVideoUrl" frameborder="0"
                                 allowfullscreen
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                                allow="accelerometer;clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
                             <button v-if="currentVideoUrl" @click="toggleFullscreen" class="custom-fullscreen">
                                 <span v-if="!isFullscreen">⛶</span>
                                 <span v-else>⤢</span>
@@ -90,9 +90,9 @@
                     <!-- Video Info -->
                     <div class="mt-4 text-right">
                         <h2 class="text-xl font-bold">
-                            {{ selectedCourse.name }} / {{ selectedPart?.name }} / المحاضرة رقم "{{
+                            {{
                                 selectedEpisode.name
-                            }}" / والأخيرة
+                            }}
                         </h2>
                         <p class="text-gray-600">الأستاذ {{ selectedTeacherName }}</p>
                         <div class="flex justify-end mt-2">
@@ -135,7 +135,7 @@
                 <div v-else class="space-y-4">
                     <div v-for="course in filteredCourses" :key="course.id" class="mb-6">
                         <div class="flex items-center gap-2 mb-2">
-                            <h3 class="font-bold text-lg text-slate-800">{{ course.name }}</h3>
+                            <h3 class="font-bold text-sm text-slate-800">{{ course.name }}</h3>
                             <div v-if="isCoursePurchased(course.id)" class="badge badge-success text-white text-xs">
                                 مشترك</div>
                         </div>
@@ -181,18 +181,12 @@
                                         <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white"
                                             viewBox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd"
-                                                d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                                d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 bg-white2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
                                                 clip-rule="evenodd" />
                                         </svg>
                                     </div>
                                     <div class="text-sm">
-                                        <div class="font-semibold">المحاضرة {{ episode.name }}</div>
-                                        <div class="text-xs text-gray-600">{{ course.name }}</div>
-                                        <div class="text-xs"
-                                            :class="episode.isFree ? 'text-green-600' : isCoursePurchased(course.id) ? 'text-blue-600' : 'text-orange-600'">
-                                            {{ episode.isFree ? 'مجاني' : isCoursePurchased(course.id) ? 'مشترك' :
-                                                'مدفوع' }}
-                                        </div>
+                                        <div class="font-semibold text-sm">{{ episode.name }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -246,7 +240,7 @@ onMounted(async () => {
         document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
         document.addEventListener('mozfullscreenchange', handleFullscreenChange);
         document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-
+        // sort data by byed 
         courses.value = data
             .filter(course => course && typeof course === 'object') // Filter out invalid courses
             .map(course => ({
@@ -506,7 +500,7 @@ function handleFullscreenChange() {
     text-shadow: 1px 1px 2px rgba(226, 0, 0, 0.356);
     font-size: 14px;
     white-space: nowrap;
-    z-index: 9999;
+    z-index: 2;
     position: absolute;
     animation: moveWatermark 30s ease-in-out infinite;
 }
