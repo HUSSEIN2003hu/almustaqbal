@@ -47,10 +47,14 @@
                             <div class="mr-3 flex-grow">
                                 <h3 class="text-slate-800 text-black" style="font-weight: 600;">{{ teacher.name }}</h3>
                                 <p class="text-slate-600 text-gray-800 text-xs">عدد المحاضرات: {{ teacher.parts?.length
-                                }}</p>
+                                    }}</p>
                                 <div v-if="isCoursePurchased(teacher.id)"
                                     class="badge badge-success text-white text-xs mt-1 absolute -top-4 right-2">مشترك
                                 </div>
+                                <div v-else-if="teacher.isFree"
+                                    class="badge badge-success text-white text-xs mt-1 absolute -top-4 right-2">مجاني
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -102,6 +106,10 @@
                                     <div v-if="isCoursePurchased(teacher.id)"
                                         class="badge badge-success text-white text-xs mt-1 absolute -top-4 right-2">
                                         مشترك</div>
+                                    <div v-else-if="hasFreeVideos(teacher.id)"
+                                        class="badge badge-info text-white text-xs mt-1 absolute -top-4 right-2">
+                                        {{ teacher.freeVideosCount || hasFreeVideos(teacher.id) }}
+                                    </div>
                                 </div>
                             </div>
                         </swiper-slide>
@@ -215,6 +223,7 @@
                                 <h3 class="font-bold text-sm text-slate-800">{{ course.name }}</h3>
                                 <div v-if="isCoursePurchased(course.id)" class="badge badge-success text-white text-xs">
                                     مشترك</div>
+
                             </div>
                             <div v-for="part in course.parts" :key="part.id" class="mb-2">
                                 <h3 @click="togglePart(part.id)"
@@ -246,6 +255,8 @@
                                             isActive(course.id, part.id, episode.id) ? 'border-2 border-black' : 'border border-secondary',
                                             canAccessEpisode(course.id, episode) ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'
                                         ]">
+                                        <div class="badge badge-success text-white text-xs">
+                                            مجاني</div>
                                         <div class="w-8 h-8 rounded-full flex items-center justify-center mr-2"
                                             :class="canAccessEpisode(course.id, episode) ? 'bg-secondary' : 'bg-gray-400'">
                                             <svg v-if="canAccessEpisode(course.id, episode)"
@@ -338,10 +349,12 @@
                                         </div>
                                         <div v-else v-for="episode in part.episodes" :key="episode.id"
                                             @click="playEpisode(course, part, episode)"
-                                            class="bg-white rounded-[15px] p-3 flex items-center gap-2" :class="[
+                                            class="bg-white rounded-[15px] p-3 flex items-center gap-2 relative" :class="[
                                                 isActive(course.id, part.id, episode.id) ? 'border-2 border-black' : 'border border-secondary',
                                                 canAccessEpisode(course.id, episode) ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'
                                             ]">
+                                            <div v-if="episode.isFree" class="badge badge-info text-white text-xs absolute -top-2 left-2">
+                                                مجاني</div>
                                             <div class="w-8 h-8 rounded-full flex items-center justify-center mr-2"
                                                 :class="canAccessEpisode(course.id, episode) ? 'bg-secondary' : 'bg-gray-400'">
                                                 <svg v-if="canAccessEpisode(course.id, episode)"
@@ -399,6 +412,7 @@ const isLoadingTeacherContent = ref(false);
 const isLoadingParts = ref({});
 const isFullscreen = ref(false);
 const videoContainer = ref(null);
+const freeVideosCount = ref(0);
 
 // User store for authentication
 const userStore = useUserStore();
@@ -512,6 +526,21 @@ const filteredCourses = computed(() => {
 const selectedTeacherName = computed(() => {
     const course = courses.value.find(c => c.id === selectedTeacher.value);
     return course ? course.name : '';
+});
+
+// hasfreevideos and cont 
+// Determine if a course has free videos
+const hasFreeVideos = computed(() => {
+    // rturen the haow many free videos in the course 
+    return (courseId) => {
+        const course = courses.value.find(c => c.id === courseId);
+        if (!course) return false;
+        const freeVideos = course.parts.reduce((count, part) => {
+            return count + (part.episodes.filter(episode => episode.isFree).length || 0);
+        }, 0);
+        return freeVideos > 0 ? `${freeVideos} محاضرات مجانية` : false;
+    };
+
 });
 
 // Determine if a course is purchased by the user
@@ -770,12 +799,12 @@ button.custom-fullscreen {
     height: auto;
     padding: 0;
     width: 100%;
-    transition: transform 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 .teachers-swiper .swiper-slide:hover,
 .chapters-swiper .swiper-slide:hover {
-    transform: translateX(-4px);
+    transition: all 0.2s ease;
 }
 
 .swiper-pagination {
