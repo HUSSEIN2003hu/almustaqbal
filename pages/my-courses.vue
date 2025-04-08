@@ -2,32 +2,41 @@
     <div class="container mx-auto min-h-screen ">
         <div class="flex flex-col-reverse lg:flex-row-reverse gap-6">
             <!-- Teachers Panel -->
-            <div class="bg-tertiary rounded-[30px] shadow-xl p-4 lg:w-1/4">
-                <h2 class="text-xl font-bold text-white mb-4" style="color: azure;">جميع المعلمين</h2>
+            <div class="bg-tertiary rounded-[30px] shadow-xl p-4  pb-8 lg:w-1/4">
+                <h2 class="text-xl font-bold text-white mb-3" style="color: azure;">جميع المعلمين</h2>
 
-                <div v-if="isLoadingCourses" class="flex justify-center items-center p-6">
+                <div v-if="isLoadingCourses" class="flex justify-center items-center p-4">
                     <div class="loading loading-spinner loading-lg text-white"></div>
                     <p class="mr-2 text-white">جاري تحميل المعلمين...</p>
                 </div>
 
                 <div v-else class="space-y-8">
-                    <div v-for="(teacher, index) in courses" :key="index"
-                        class="bg-secondary text-primary rounded-lg p-3 flex items-center cursor-pointer relative mt-12"
-                        :class="{ 'bg-white text-primary': selectedTeacher === teacher.id }" @click="selectTeacher(teacher.id)">
-                        <div class="badge mr-3 absolute -top-5 left-2 border-none"
-                            :style="{ backgroundColor: teacher.backgroundColor }">
-                            {{ teacher.department }}
-                        </div>
-                        <div class="flex-shrink-0 w-12 h-12 rounded-full overflow-hidden">
-                            <img :src="teacher.avatar" alt="Teacher avatar" class="w-full h-full object-cover" />
-                        </div>
-                        <div class="mr-3 flex-grow">
-                            <h3 class="text-slate-800 text-black" style="    font-weight: 600;">{{ teacher.name }}</h3>
-                            <p class="text-slate-600 text-gray-800 text-xs">عدد المحاضرات: {{ teacher.parts?.length }}</p>
-                            <div v-if="isCoursePurchased(teacher.id)"
-                                class="badge badge-success text-white text-xs mt-1 absolute -top-5 right-2">مشترك</div>
-                        </div>
-                    </div>
+                    <swiper :modules="modules" :slides-per-view="5" :space-between="1" :direction="'vertical'"
+                        :height="500" :mousewheel="true" :pagination="{ clickable: true }" class="teachers-swiper">
+                        <swiper-slide v-for="(teacher, index) in courses" :key="index">
+                            <div class="bg-secondary text-primary rounded-lg p-4 flex items-center cursor-pointer relative mt-8"
+                                :class="{ 'bg-white text-primary': selectedTeacher === teacher.id }"
+                                @click="selectTeacher(teacher.id)">
+                                <div class="badge mr-2 absolute -top-4 left-2 border-none"
+                                    :style="{ backgroundColor: teacher.backgroundColor }">
+                                    {{ teacher.department }}
+                                </div>
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden">
+                                    <img :src="teacher.avatar" alt="Teacher avatar"
+                                        class="w-full h-full object-cover" />
+                                </div>
+                                <div class="mr-3 flex-grow">
+                                    <h3 class="text-slate-800 text-black" style="font-weight: 600;">{{ teacher.name }}
+                                    </h3>
+                                    <p class="text-slate-600 text-gray-800 text-xs">عدد المحاضرات: {{
+                                        teacher.parts?.length }}</p>
+                                    <div v-if="isCoursePurchased(teacher.id)"
+                                        class="badge badge-success text-white text-xs mt-1 absolute -top-4 right-2">
+                                        مشترك</div>
+                                </div>
+                            </div>
+                        </swiper-slide>
+                    </swiper>
                 </div>
             </div>
 
@@ -119,79 +128,86 @@
             </div>
 
             <!-- Lectures List -->
-            <div class="bg-secondary rounded-[30px] shadow-xl p-4 lg:w-1/4">
-                <h2 class="text-xl font-bold text-slate-800 mb-4">جميع الفصول</h2>
+            <div class="bg-secondary rounded-[30px] shadow-xl p-4 pb-8 lg:w-1/4">
+                <h2 class="text-xl font-bold text-slate-800 mb-3">جميع الفصول</h2>
 
-                <div v-if="isLoadingCourses" class="flex justify-center items-center p-6">
+                <div v-if="isLoadingCourses" class="flex justify-center items-center p-4">
                     <div class="loading loading-spinner loading-lg text-secondary"></div>
                     <p class="mr-2 text-slate-800">جاري تحميل الفصول...</p>
                 </div>
 
-                <div v-else-if="isLoadingTeacherContent" class="flex justify-center items-center p-6">
+                <div v-else-if="isLoadingTeacherContent" class="flex justify-center items-center p-4">
                     <div class="loading loading-spinner loading-lg text-secondary"></div>
                     <p class="mr-2 text-slate-800">جاري تحميل محتوى المعلم...</p>
                 </div>
 
-                <div v-else class="space-y-4">
-                    <div v-for="course in filteredCourses" :key="course.id" class="mb-6">
-                        <div class="flex items-center gap-2 mb-2">
-                            <h3 class="font-bold text-sm text-slate-800">{{ course.name }}</h3>
-                            <div v-if="isCoursePurchased(course.id)" class="badge badge-success text-white text-xs">
-                                مشترك</div>
-                        </div>
-                        <div v-for="part in course.parts" :key="part.id" class="mb-4">
-                            <h3 @click="togglePart(part.id)"
-                                class="bg-white rounded-[30px] p-4 flex items-center cursor-pointer text-slate-800 font-bold shadow-sm">
-                                <span>{{ part.name }}</span>
-                                <span class="mr-auto">
-                                    <svg v-if="!openParts[part.id]" xmlns="http://www.w3.org/2000/svg"
-                                        class="h-6 w-6 text-secondary" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5l7 7-7 7" />
-                                    </svg>
-                                    <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-secondary"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </span>
-                            </h3>
-
-                            <div v-if="openParts[part.id]" class="space-y-2 mt-3 px-2">
-                                <div v-if="isLoadingParts[part.id]" class="flex justify-center my-4">
-                                    <div class="loading loading-spinner loading-md text-secondary"></div>
-                                    <span class="mr-2 text-slate-800">جاري التحميل...</span>
+                <div v-else class="space-y-1">
+                    <swiper :modules="modules" :slides-per-view="5" :space-between="1" :direction="'vertical'"
+                        :height="500" :mousewheel="true" :pagination="{ clickable: true }" class="chapters-swiper">
+                        <swiper-slide v-for="course in filteredCourses" :key="course.id">
+                            <div class="mb-2">
+                                <div class="flex items-center gap-1 mb-1">
+                                    <h3 class="font-bold text-sm text-slate-800">{{ course.name }}</h3>
+                                    <div v-if="isCoursePurchased(course.id)"
+                                        class="badge badge-success text-white text-xs">
+                                        مشترك</div>
                                 </div>
-                                <div v-else v-for="episode in part.episodes" :key="episode.id"
-                                    @click="playEpisode(course, part, episode)"
-                                    class="bg-white rounded-[15px] p-3 flex items-center gap-2" :class="[
-                                        isActive(course.id, part.id, episode.id) ? 'border-2 border-black' : 'border border-secondary',
-                                        canAccessEpisode(course.id, episode) ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'
-                                    ]">
-                                    <div class="w-8 h-8 rounded-full flex items-center justify-center mr-2"
-                                        :class="canAccessEpisode(course.id, episode) ? 'bg-secondary' : 'bg-gray-400'">
-                                        <svg v-if="canAccessEpisode(course.id, episode)"
-                                            xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white"
-                                            viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd"
-                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white"
-                                            viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd"
-                                                d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 bg-white2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                    <div class="text-sm">
-                                        <div class="font-semibold text-sm">{{ episode.name }}</div>
+                                <div v-for="part in course.parts" :key="part.id" class="mb-2">
+                                    <h3 @click="togglePart(part.id)"
+                                        class="bg-white rounded-[30px] p-4 flex items-center cursor-pointer text-slate-800 font-bold shadow-sm">
+                                        <span>{{ part.name }}</span>
+                                        <span class="mr-auto">
+                                            <svg v-if="!openParts[part.id]" xmlns="http://www.w3.org/2000/svg"
+                                                class="h-6 w-6 text-secondary" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 5l7 7-7 7" />
+                                            </svg>
+                                            <svg v-else xmlns="http://www.w3.org/2000/svg"
+                                                class="h-6 w-6 text-secondary" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </span>
+                                    </h3>
+
+                                    <div v-if="openParts[part.id]" class="space-y-2 mt-3 px-2">
+                                        <div v-if="isLoadingParts[part.id]" class="flex justify-center my-4">
+                                            <div class="loading loading-spinner loading-md text-secondary"></div>
+                                            <span class="mr-2 text-slate-800">جاري التحميل...</span>
+                                        </div>
+                                        <div v-else v-for="episode in part.episodes" :key="episode.id"
+                                            @click="playEpisode(course, part, episode)"
+                                            class="bg-white rounded-[15px] p-3 flex items-center gap-2" :class="[
+                                                isActive(course.id, part.id, episode.id) ? 'border-2 border-black' : 'border border-secondary',
+                                                canAccessEpisode(course.id, episode) ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'
+                                            ]">
+                                            <div class="w-8 h-8 rounded-full flex items-center justify-center mr-2"
+                                                :class="canAccessEpisode(course.id, episode) ? 'bg-secondary' : 'bg-gray-400'">
+                                                <svg v-if="canAccessEpisode(course.id, episode)"
+                                                    xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white"
+                                                    viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd"
+                                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                                <svg v-else xmlns="http://www.w3.org/2000/svg"
+                                                    class="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd"
+                                                        d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 bg-white2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                            </div>
+                                            <div class="text-sm">
+                                                <div class="font-semibold text-sm">{{ episode.name }}</div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </swiper-slide>
+                    </swiper>
                 </div>
             </div>
         </div>
@@ -201,6 +217,13 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useUserStore } from '~/stores/auth';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Pagination, Mousewheel } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+
+// Define Swiper modules
+const modules = [Pagination, Mousewheel];
 
 // State
 const courses = ref([]);
@@ -557,5 +580,40 @@ button.custom-fullscreen {
     border-radius: 4px;
     padding: 5px 10px;
     cursor: pointer;
+}
+
+.teachers-swiper,
+.chapters-swiper {
+    height: 500px;
+    overflow: hidden;
+    padding: 0 1px;
+}
+
+.teachers-swiper .swiper-slide,
+.chapters-swiper .swiper-slide {
+    height: auto;
+    padding: 1px;
+}
+
+.swiper-pagination {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.swiper-pagination-bullet {
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.swiper-pagination-bullet-active {
+    background: #fff;
 }
 </style>
