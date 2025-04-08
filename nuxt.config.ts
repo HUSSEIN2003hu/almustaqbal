@@ -15,5 +15,9 @@ export default defineNuxtConfig({
     measurementId: process.env.MEASUREMENT_ID,
     bunnyApiKey: process.env.BUNNY_API_KEY,
     bunnyLibraryId: process.env.BUNNY_LIBRARY_ID
+  },
+  devServer: {
+    port: 3000,
+    host: '0.0.0.0',
   }
 })
