@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
     const { files } = await readFiles(event, {
       includeFields: false,
       maxFiles: 1,
-      maxFileSize: 10 * 1024 * 1024 // 10MB max file size
+      maxFileSize: 5 * 1024 * 1024 * 1024 // 10MB max file size
     })
 
     const thumbnailFile = files.thumbnail?.[0]

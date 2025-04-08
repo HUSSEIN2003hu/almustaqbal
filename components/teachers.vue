@@ -40,10 +40,10 @@
                 :pagination="{ clickable: true }"
             >
                 <SwiperSlide  class="flex justify-center" v-for="(teacher, index) in teachers" :key="index" style="padding: 20px;">
-                    <div class="card bg-white rounded-xl shadow-md p-4 min-w-[200px] h-full"  
+                    <div class="card bg-white rounded-xl shadow-md p-4 min-w-[235px] h-full"  
                          style=" box-shadow: 0px 0px 8px 0 rgba(0,0,0,0.25); background-color: white;" >
                         <div class="avatar mx-auto mt-2">
-                            <div class="ring-neutral-content ring-offset-base-100 w-32 rounded-full ring ring-offset-2">
+                            <div class="ring-neutral-content ring-offset-base-100 w-45 rounded-full ring ring-offset-2">
                                 <img :src="teacher.image" />
                             </div>
                         </div>
@@ -74,33 +74,33 @@ const teachers = ref([
     {
         name: 'محمد علي',
         subject: 'الفيزياء',
-        image: 'https://img.freepik.com/fotos-kostenlos/portrait-des-weissen-mannes-getrennt_53876-40306.jpg?t=st=1741703450~exp=1741707050~hmac=e6ec7b79085f069f5670d169a1f66990f7a2d734b2b8c1cc800db4921496ca24&w=900',
+        image: 'test-img.jpg',
     },
     {
         name: 'علي علي',
         subject: 'الكيمياء',
-        image: 'https://img.freepik.com/fotos-kostenlos/portrait-des-weissen-mannes-getrennt_53876-40306.jpg?t=st=1741703450~exp=1741707050~hmac=e6ec7b79085f069f5670d169a1f66990f7a2d734b2b8c1cc800db4921496ca24&w=900',
+        image: 'test-img.jpg',
     },
     {
         name: 'محمد محمد',
         subject: 'اللغة العربية',
-        image: 'https://img.freepik.com/fotos-kostenlos/portrait-des-weissen-mannes-getrennt_53876-40306.jpg?t=st=1741703450~exp=1741707050~hmac=e6ec7b79085f069f5670d169a1f66990f7a2d734b2b8c1cc800db4921496ca24&w=900',
+        image: 'test-img.jpg',
     },
     {
         name: 'أحمد محمد',
         subject: 'اللغة الإنكليزية',
-        image: 'https://img.freepik.com/fotos-kostenlos/portrait-des-weissen-mannes-getrennt_53876-40306.jpg?t=st=1741703450~exp=1741707050~hmac=e6ec7b79085f069f5670d169a1f66990f7a2d734b2b8c1cc800db4921496ca24&w=900',
+        image: 'test-img.jpg',
 
     },
     {
         name: 'علي أحمد',
         subject: 'التاريخ',
-        image: 'https://img.freepik.com/fotos-kostenlos/portrait-des-weissen-mannes-getrennt_53876-40306.jpg?t=st=1741703450~exp=1741707050~hmac=e6ec7b79085f069f5670d169a1f66990f7a2d734b2b8c1cc800db4921496ca24&w=900',
+        image: 'test-img.jpg',
     },
     {
         name: 'محمد أحمد',
         subject: 'الجغرافيا',
-        image: 'https://img.freepik.com/fotos-kostenlos/portrait-des-weissen-mannes-getrennt_53876-40306.jpg?t=st=1741703450~exp=1741707050~hmac=e6ec7b79085f069f5670d169a1f66990f7a2d734b2b8c1cc800db4921496ca24&w=900',
+        image: 'test-img.jpg',
     },
 ]);</script>
 

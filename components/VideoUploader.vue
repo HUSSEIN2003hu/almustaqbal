@@ -146,7 +146,7 @@ function handleFileChange(event: Event) {
   }
 
   // Check file size (100MB max)
-  if (file.size > 100 * 1024 * 1024) {
+  if (file.size > 5 * 1024 * 1024 * 1024 ) {
     error.value = 'Video file is too large (max 100MB). Please compress or split your video.'
     return
   }
