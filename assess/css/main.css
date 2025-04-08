@@ -1,0 +1,25 @@
+@import url("https://fonts.googleapis.com/css2?family=Alexandria:wght@500;900&display=swap");
+body {
+  font-family: "Alexandria", sans-serif !important;
+  direction: rtl; /* Right-to-left text direction for Arabic */
+  font-feature-settings: "ss06", "liga", "dlig";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: unset !important;
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding: 100px;
+}
+
+:root {
+    --color-secondary: #FABD59 !important;
+    --color-primary: #184AAC !important;
+}
+/* body { font-size: calc(16px + (26 - 16) * ((100vw - 768px) / (1280 - 768))); }
+  @media screen and (max-width: 768px) { body { font-size: 16px; }}
+  @media screen and (min-width: 1280px) { body { font-size: 26px; }} */
+
+.bg-white {
+  background-color: azure;
+}
