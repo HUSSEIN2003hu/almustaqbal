@@ -92,7 +92,16 @@ export async function createUser(event: H3Event, username: string, courses: stri
     }
 
     // Generate a unique activation code
-    const code = await generateActivationCode();
+    let code: string = "";
+    let exists = true;
+
+    while (exists) {
+      code = await generateActivationCode();
+      const codeDoc = await adminDb.collection("activationCodes").doc(code).get();
+      exists = codeDoc.exists;
+    }
+
+    const timestamp = Date.now();
 
     // Create a batch write
     const batch = adminDb.batch();
@@ -104,10 +113,10 @@ export async function createUser(event: H3Event, username: string, courses: stri
       code,
       used: false,
       courses,
-      createdAt: Date.now(),
+      createdAt: timestamp,
     });
 
-    // Add to users collection (pre-created with used: false)
+    // If you plan to also create a placeholder user in `users` collection:
     const userRef = adminDb.collection("users").doc(code);
     batch.set(userRef, {
       username,
@@ -116,7 +125,6 @@ export async function createUser(event: H3Event, username: string, courses: stri
       createdAt: Date.now(),
       isActive: false,
     });
-
     // Commit the batch
     await batch.commit();
 
@@ -125,13 +133,14 @@ export async function createUser(event: H3Event, username: string, courses: stri
       username,
       code,
       courses,
-      createdAt: Date.now(),
+      createdAt: timestamp,
       isActive: false,
     };
   } catch (error) {
     handleError(error, "Failed to create user");
   }
 }
+
 
 export async function updateUser(event: H3Event, userId: string, data: { username?: string; courses?: string[]; isAdmin?: boolean }) {
   const { validateAdminPassword } = useAdminAuth();

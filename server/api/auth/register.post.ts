@@ -32,6 +32,7 @@ export default defineEventHandler(async (event) => {
 
         // Markiere Code als verwendet
         batch.update(codeRef, {
+            username: codeSnap.data()?.username,
             email,
             used: true,
             usedBy: user.uid,
@@ -40,7 +41,8 @@ export default defineEventHandler(async (event) => {
         });
 
         // Erstelle User-Dokument
-        batch.set(adminDb.collection('users').doc(user.uid), {
+        batch.update(adminDb.collection('users').doc(code), {
+            uid: user.uid,
             email,
             username: codeSnap.data()?.username,
             createdAt: Date.now(),

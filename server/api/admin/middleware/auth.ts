@@ -73,8 +73,9 @@ async function checkUserIsAdmin(event: H3Event): Promise<boolean> {
     if (!sessionCookie) return false;
 
     const decodedToken = await adminAuth.verifySessionCookie(sessionCookie, true);
-    const userDoc = await adminDb.collection('users').doc(decodedToken.uid).get();
-    const userData = userDoc.data();
+    const userDoc = await adminDb.collection('users').where('uid', '==', decodedToken.uid).limit(1).get();
+    if (userDoc.empty) return false; // User not found
+    const userData = userDoc.docs[0]?.data();
 
     return !!userData?.isAdmin; // Return true if the user has isAdmin flag
   } catch (error) {
