@@ -7,8 +7,8 @@ export default defineEventHandler(async (event) => {
       if (!sessionCookie) return { valid: false };
   
       const decodedToken = await adminAuth.verifySessionCookie(sessionCookie, true);
-      const userDoc = await adminDb.collection('users').doc(decodedToken.uid).get();
-      const userData = userDoc.data();
+      const userDoc = await adminDb.collection('users').where ('uid', '==', decodedToken.uid).limit(1).get();
+      const userData = userDoc.docs[0]?.data();
   
       return {
         valid: true,
