@@ -17,8 +17,8 @@
             <li class="text-lg">متابعة مستمرة ودعم متكامل بإشراف الخبراء</li>
           </ul>
           <div class="mt-4 flex gap-4">
-            <button class="btn btn-secondary rounded-[20px] mt-4 shadow-md" style="color: #000; font-weight: normal;"> الدورات التعليمية</button>
-            <button class="btn  rounded-[20px] mt-4 shadow-md" style="color: #000; font-weight: normal;"> دخول إلى حسابي</button>
+            <NuxtLink to="/my-courses" class="btn btn-secondary rounded-[20px] mt-4 shadow-md" style="color: #000; font-weight: normal;"> الدورات التعليمية</NuxtLink>
+            <NuxtLink to="/auth" class="btn  rounded-[20px] mt-4 shadow-md" style="color: #000; font-weight: normal;"> دخول إلى حسابي</NuxtLink>
           </div>
         </div>
       </div>
