@@ -47,7 +47,7 @@
                             <div class="mr-3 flex-grow">
                                 <h3 class="text-slate-800 text-black" style="font-weight: 600;">{{ teacher.name }}</h3>
                                 <p class="text-slate-600 text-gray-800 text-xs">عدد المحاضرات: {{ teacher.parts?.length
-                                    }}</p>
+                                }}</p>
                                 <div v-if="isCoursePurchased(teacher.id)"
                                     class="badge badge-success text-white text-xs mt-1 absolute -top-4 right-2">مشترك
                                 </div>
@@ -70,25 +70,21 @@
                     <p class="mr-2 text-white">جاري تحميل المعلمين...</p>
                 </div>
 
-                <div v-else class="space-y-8">
-                    <swiper :modules="modules" :slides-per-view="'auto'" :space-between="0" :direction="'vertical'"
-                        :height="500" :mousewheel="{
+                <div v-else class="h-[70vh] overflow-hidden">
+                    <swiper :modules="modules" :slides-per-view="'auto'" :space-between="20" :direction="'vertical'"
+                        :mousewheel="{
                             forceToAxis: true,
-                            sensitivity: 0.5,
+                            sensitivity: 1,
                             releaseOnEdges: true
                         }" :free-mode="{
                             enabled: true,
                             momentum: true,
-                            momentumRatio: 0.5,
-                            momentumVelocityRatio: 0.5
-                        }" :grab-cursor="true" :pagination="{
-                            clickable: true,
-                            type: 'bullets',
-                            dynamicBullets: true
-                        }" class="teachers-swiper">
-                        <swiper-slide v-for="(teacher, index) in courses" :key="index">
-                            <div class="bg-secondary text-primary rounded-lg p-4 flex items-center cursor-pointer relative mt-8"
-                                :class="{ 'bg-white text-primary': selectedTeacher === teacher.id }"
+                            momentumRatio: 0.8,
+                            momentumVelocityRatio: 0.8
+                        }" class="h-full">
+                        <swiper-slide v-for="(teacher, index) in courses" :key="index" class="!h-auto ">
+                            <div class="bg-secondary text-primary rounded-lg p-4 flex items-center cursor-pointer relative mt-2 transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
+                                :class="{ 'bg-white text-primary shadow-md transform scale-[0.98]': selectedTeacher === teacher.id, 'mt-8': index === 0 }"
                                 @click="selectTeacher(teacher.id)">
                                 <div class="badge mr-2 absolute -top-4 left-2 border-none"
                                     :style="{ backgroundColor: teacher.backgroundColor }">
@@ -134,40 +130,14 @@
                                 <span v-else>⤢</span>
                             </button>
                             <div v-else class="flex items-center justify-center h-full flex-col text-white p-4">
-                                <div v-if="isLoadingVideo" class="flex flex-col items-center justify-center">
-                                    <div class="loading loading-spinner loading-lg mb-2"></div>
-                                    <p class="text-white">جاري تحميل الفيديو...</p>
-                                </div>
-                                <div v-else-if="videoError" class="flex flex-col items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-red-500 mb-2"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                    </svg>
-                                    <p class="text-red-400 text-center">{{ videoError }}</p>
-                                    <div v-if="!userStore.isLoggedIn" class="mt-4">
-                                        <NuxtLink to="/auth" class="btn btn-primary btn-sm">تسجيل الدخول للمشاهدة
-                                        </NuxtLink>
+                                <div class="flex flex-col items-center justify-center space-y-3">
+                                    <div class="relative">
+                                        <div class="loading loading-spinner loading-lg mb-2"></div>
+                                        <div
+                                            class="absolute inset-0 border-4 border-t-transparent border-primary rounded-full animate-ping">
+                                        </div>
                                     </div>
-                                    <div v-else-if="selectedEpisode && !selectedEpisode.isFree && !isCoursePurchased(selectedCourse.id)"
-                                        class="mt-4">
-                                        <button class="btn btn-accent btn-sm">شراء الدورة</button>
-                                    </div>
-                                </div>
-                                <div v-else class="flex flex-col items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-yellow-500 mb-2"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                    </svg>
-                                    <p class="text-yellow-400 text-center">هذا المحتوى مقفل</p>
-                                    <div v-if="!userStore.isLoggedIn" class="mt-4">
-                                        <NuxtLink to="/auth" class="btn btn-primary btn-sm">تسجيل الدخول للمشاهدة
-                                        </NuxtLink>
-                                    </div>
-                                    <div v-else-if="selectedEpisode && !selectedEpisode.isFree" class="mt-4">
-                                        <button class="btn btn-accent btn-sm">شراء الدورة</button>
-                                    </div>
+                                    <p class="text-white animate-pulse">جاري تحميل الفيديو...</p>
                                 </div>
                             </div>
                         </div>
@@ -245,38 +215,39 @@
                                 </h3>
 
                                 <div v-if="openParts[part.id]" class="space-y-2 mt-3 px-2">
-                                    <div v-if="isLoadingParts[part.id]" class="flex justify-center my-4">
-                                        <div class="loading loading-spinner loading-md text-secondary"></div>
-                                        <span class="mr-2 text-slate-800">جاري التحميل...</span>
-                                    </div>
-                                    <div v-else v-for="episode in part.episodes" :key="episode.id"
-                                        @click="playEpisode(course, part, episode)"
-                                        class="bg-white rounded-[15px] p-3 flex items-center gap-2" :class="[
-                                            isActive(course.id, part.id, episode.id) ? 'border-2 border-black' : 'border border-secondary',
-                                            canAccessEpisode(course.id, episode) ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'
-                                        ]">
-                                        <div class="badge badge-success text-white text-xs">
-                                            مجاني</div>
-                                        <div class="w-8 h-8 rounded-full flex items-center justify-center mr-2"
-                                            :class="canAccessEpisode(course.id, episode) ? 'bg-secondary' : 'bg-gray-400'">
-                                            <svg v-if="canAccessEpisode(course.id, episode)"
-                                                xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white"
-                                                viewBox="0 0 20 20" fill="currentColor">
-                                                <path fill-rule="evenodd"
-                                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white"
-                                                viewBox="0 0 20 20" fill="currentColor">
-                                                <path fill-rule="evenodd"
-                                                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 bg-white2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
+                                    <transition-group name="staggered-fade" tag="div" class="space-y-2"
+                                        v-on:before-enter="beforeEnter" v-on:enter="enter" v-on:leave="leave">
+                                        <div v-for="(episode, index) in part.episodes" :key="episode.id"
+                                            :data-index="index" @click="playEpisode(course, part, episode)"
+                                            class="bg-white rounded-[15px] p-3 flex items-center gap-2 relative transform transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+                                            :class="[
+                                                isActive(course.id, part.id, episode.id) ? 'border-2 border-black scale-[1.02]' : 'border border-secondary',
+                                                canAccessEpisode(course.id, episode) ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'
+                                            ]">
+                                            <div v-if="episode.isFree"
+                                                class="badge badge-info text-white text-xs absolute -top-2 left-2">
+                                                مجاني</div>
+                                            <div class="w-8 h-8 rounded-full flex items-center justify-center mr-2"
+                                                :class="canAccessEpisode(course.id, episode) ? 'bg-secondary' : 'bg-gray-400'">
+                                                <svg v-if="canAccessEpisode(course.id, episode)"
+                                                    xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white"
+                                                    viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd"
+                                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                                <svg v-else xmlns="http://www.w3.org/2000/svg"
+                                                    class="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd"
+                                                        d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 bg-white2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                            </div>
+                                            <div class="text-sm">
+                                                <div class="font-semibold text-sm">{{ episode.name }}</div>
+                                            </div>
                                         </div>
-                                        <div class="text-sm">
-                                            <div class="font-semibold text-sm">{{ episode.name }}</div>
-                                        </div>
-                                    </div>
+                                    </transition-group>
                                 </div>
                             </div>
                         </div>
@@ -298,23 +269,19 @@
                     <p class="mr-2 text-slate-800">جاري تحميل محتوى المعلم...</p>
                 </div>
 
-                <div v-else class="space-y-1">
-                    <swiper :modules="modules" :slides-per-view="'auto'" :space-between="0" :direction="'vertical'"
-                        :height="500" :mousewheel="{
+                <div v-else class="h-[70vh] overflow-hidden">
+                    <swiper :modules="modules" :slides-per-view="'auto'" :space-between="20" :direction="'vertical'"
+                        :mousewheel="{
                             forceToAxis: true,
-                            sensitivity: 0.5,
+                            sensitivity: 1,
                             releaseOnEdges: true
                         }" :free-mode="{
                             enabled: true,
                             momentum: true,
-                            momentumRatio: 0.5,
-                            momentumVelocityRatio: 0.5
-                        }" :grab-cursor="true" :pagination="{
-                            clickable: true,
-                            type: 'bullets',
-                            dynamicBullets: true
-                        }" class="chapters-swiper">
-                        <swiper-slide v-for="course in filteredCourses" :key="course.id">
+                            momentumRatio: 0.8,
+                            momentumVelocityRatio: 0.8
+                        }" class="h-full">
+                        <swiper-slide v-for="course in filteredCourses" :key="course.id" class="!h-auto">
                             <div class="mb-2">
                                 <div class="flex items-center gap-1 mb-1">
                                     <h3 class="font-bold text-sm text-slate-800">{{ course.name }}</h3>
@@ -324,7 +291,7 @@
                                 </div>
                                 <div v-for="part in course.parts" :key="part.id" class="mb-2">
                                     <h3 @click="togglePart(part.id)"
-                                        class="bg-white rounded-[30px] p-4 flex items-center cursor-pointer text-slate-800 font-bold shadow-sm">
+                                        class="bg-white rounded-[30px] p-4 flex items-center cursor-pointer text-slate-800 font-bold shadow-sm hover:bg-gray-50 transition-colors duration-200">
                                         <span>{{ part.name }}</span>
                                         <span class="mr-auto">
                                             <svg v-if="!openParts[part.id]" xmlns="http://www.w3.org/2000/svg"
@@ -347,33 +314,42 @@
                                             <div class="loading loading-spinner loading-md text-secondary"></div>
                                             <span class="mr-2 text-slate-800">جاري التحميل...</span>
                                         </div>
-                                        <div v-else v-for="episode in part.episodes" :key="episode.id"
-                                            @click="playEpisode(course, part, episode)"
-                                            class="bg-white rounded-[15px] p-3 flex items-center gap-2 relative" :class="[
-                                                isActive(course.id, part.id, episode.id) ? 'border-2 border-black' : 'border border-secondary',
-                                                canAccessEpisode(course.id, episode) ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'
-                                            ]">
-                                            <div v-if="episode.isFree" class="badge badge-info text-white text-xs absolute -top-2 left-2">
-                                                مجاني</div>
-                                            <div class="w-8 h-8 rounded-full flex items-center justify-center mr-2"
-                                                :class="canAccessEpisode(course.id, episode) ? 'bg-secondary' : 'bg-gray-400'">
-                                                <svg v-if="canAccessEpisode(course.id, episode)"
-                                                    xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white"
-                                                    viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fill-rule="evenodd"
-                                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                                                        clip-rule="evenodd" />
-                                                </svg>
-                                                <svg v-else xmlns="http://www.w3.org/2000/svg"
-                                                    class="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fill-rule="evenodd"
-                                                        d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 bg-white2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                                                        clip-rule="evenodd" />
-                                                </svg>
-                                            </div>
-                                            <div class="text-sm">
-                                                <div class="font-semibold text-sm">{{ episode.name }}</div>
-                                            </div>
+                                        <div v-else>
+                                            <transition-group name="staggered-fade" tag="div" class="space-y-2"
+                                                v-on:before-enter="beforeEnter" v-on:enter="enter" v-on:leave="leave">
+                                                <div v-for="(episode, index) in part.episodes" :key="episode.id"
+                                                    :data-index="index" @click="playEpisode(course, part, episode)"
+                                                    class="bg-white rounded-[15px] p-3 flex items-center gap-2 relative transform transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+                                                    :class="[
+                                                        isActive(course.id, part.id, episode.id) ? 'border-2 border-black scale-[1.02]' : 'border border-secondary',
+                                                        canAccessEpisode(course.id, episode) ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'
+                                                    ]">
+                                                    <div v-if="episode.isFree"
+                                                        class="badge badge-info text-white text-xs absolute -top-2 left-2">
+                                                        مجاني</div>
+                                                    <div class="w-8 h-8 rounded-full flex items-center justify-center mr-2"
+                                                        :class="canAccessEpisode(course.id, episode) ? 'bg-secondary' : 'bg-gray-400'">
+                                                        <svg v-if="canAccessEpisode(course.id, episode)"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            class="h-4 w-4 text-white" viewBox="0 0 20 20"
+                                                            fill="currentColor">
+                                                            <path fill-rule="evenodd"
+                                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                                                                clip-rule="evenodd" />
+                                                        </svg>
+                                                        <svg v-else xmlns="http://www.w3.org/2000/svg"
+                                                            class="h-4 w-4 text-white" viewBox="0 0 20 20"
+                                                            fill="currentColor">
+                                                            <path fill-rule="evenodd"
+                                                                d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 bg-white2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                                                clip-rule="evenodd" />
+                                                        </svg>
+                                                    </div>
+                                                    <div class="text-sm">
+                                                        <div class="font-semibold text-sm">{{ episode.name }}</div>
+                                                    </div>
+                                                </div>
+                                            </transition-group>
                                         </div>
                                     </div>
                                 </div>
@@ -393,6 +369,7 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Pagination, Mousewheel } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import * as anime from 'animejs';
 
 // Define Swiper modules
 const modules = [Pagination, Mousewheel];
@@ -491,27 +468,68 @@ onMounted(async () => {
     }
 });
 
-// Fetch video URL securely from the API
+// Add transition hooks
+const beforeEnter = (el) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+};
+
+const enter = (el, done) => {
+    const delay = el.dataset.index * 50;
+    setTimeout(() => {
+        el.style.transition = 'all 400ms ease-out';
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+        el.addEventListener('transitionend', done, { once: true });
+    }, delay);
+};
+
+const leave = (el, done) => {
+    el.style.transition = 'all 200ms ease-in';
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(-20px)';
+    el.addEventListener('transitionend', done, { once: true });
+};
+
+// Improved video loading logic
 async function loadVideoUrl(courseId, episodeId) {
     try {
-        isLoadingVideo.value = true;
-        videoError.value = null;
-        currentVideoUrl.value = null;
+        isLoadingVideo.value = true
+        videoError.value = null
 
-        const response = await fetch(`/api/courses/video/${courseId}/${episodeId}`);
-        const data = await response.json();
+        // Abort previous request if still loading
+        if (window.videoRequestController) {
+            window.videoRequestController.abort()
+        }
+        window.videoRequestController = new AbortController()
+
+        const response = await fetch(`/api/courses/video/${courseId}/${episodeId}`, {
+            signal: window.videoRequestController.signal
+        })
+
+        if (!response.ok) throw new Error('فشل تحميل الفيديو')
+
+        const data = await response.json()
 
         if (data.success) {
-            currentVideoUrl.value = data.videoUrl;
+            currentVideoUrl.value = data.videoUrl
+            // Trigger video fade-in animation
+            anime.default({
+                targets: document.querySelector('.video-container'),
+                opacity: [0, 1],
+                duration: 500
+            })
         } else {
-            videoError.value = data.message || 'Could not load video. Access denied.';
-            console.error('Video access error:', data.message);
+            throw new Error(data.message || 'خطأ غير معروف')
         }
     } catch (error) {
-        videoError.value = 'An error occurred while loading the video.';
-        console.error('Failed to load video URL:', error);
+        if (error.name !== 'AbortError') {
+            videoError.value = error.message
+            console.error('Failed to load video:', error)
+        }
     } finally {
-        isLoadingVideo.value = false;
+        isLoadingVideo.value = false
+        window.videoRequestController = null
     }
 }
 
@@ -646,12 +664,26 @@ function playEpisode(course, part, episode) {
     currentVideoUrl.value = null;
     videoError.value = null;
 
+    // Close mobile menus when selecting a video
+    showTeachers.value = false;
+    showChapters.value = false;
+
     selectedCourse.value = course;
     selectedPart.value = part;
 
     // Only play the episode if the user has access
     if (canAccessEpisode(course.id, episode)) {
         selectedEpisode.value = episode;
+
+        // Add a fade-in animation to the video player
+        const videoPlayerEl = document.querySelector('.video-container');
+        if (videoPlayerEl) {
+            videoPlayerEl.style.opacity = '0';
+            setTimeout(() => {
+                videoPlayerEl.style.opacity = '1';
+                videoPlayerEl.style.transition = 'opacity 0.5s ease';
+            }, 100);
+        }
 
         // Check if we already have the link or need to fetch it
         if (episode.link) {
@@ -707,8 +739,24 @@ function handleFullscreenChange() {
     direction: rtl;
 }
 
+/* Smooth scroll behavior for entire component */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Optimized container transitions */
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+}
+
+/* Improved watermark */
 .watermark-text {
-    opacity: 0.7;
+    opacity: 0.5;
     transform: rotate(-15deg);
     user-select: none;
     color: #ffffff8a;
@@ -717,11 +765,27 @@ function handleFullscreenChange() {
     white-space: nowrap;
     z-index: 2;
     position: absolute;
-    animation: moveWatermark 30s ease-in-out infinite;
+    animation: watermark-pulse 4s ease-in-out infinite, moveWatermark 30s ease-in-out infinite;
+}
+
+@keyframes watermark-pulse {
+    0% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+
+    100% {
+        opacity: 0.3;
+    }
 }
 
 @keyframes moveWatermark {
-    0% {
+
+    0%,
+    100% {
         top: 20%;
         left: 10%;
     }
@@ -740,17 +804,6 @@ function handleFullscreenChange() {
         top: 20%;
         left: 80%;
     }
-
-    100% {
-        top: 20%;
-        left: 10%;
-    }
-}
-
-.video-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
 }
 
 /* Ensure watermark stays visible in fullscreen */
@@ -758,55 +811,62 @@ function handleFullscreenChange() {
 .video-container:-ms-fullscreen .watermark-text,
 .video-container:fullscreen .watermark-text {
     display: block !important;
+    font-size: 24px;
 }
 
-/* Add a custom fullscreen button if needed */
+/* Custom fullscreen button */
 button.custom-fullscreen {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
+    bottom: 15px;
+    right: 15px;
     z-index: 1000;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     color: white;
     border: none;
     border-radius: 4px;
-    padding: 5px 10px;
+    padding: 8px 12px;
     cursor: pointer;
+    transition: all 0.2s ease;
 }
 
+button.custom-fullscreen:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: scale(1.05);
+}
+
+/* Optimized swiper containers */
 .teachers-swiper,
 .chapters-swiper {
-    height: 500px;
+    height: 100%;
     overflow: hidden;
-    padding: 0;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    scroll-behavior: smooth;
+    overscroll-behavior: contain;
 }
 
+/* Hardware-accelerated slides */
+.swiper-slide {
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    will-change: transform;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Cleaned up scrollbars */
 .teachers-swiper::-webkit-scrollbar,
 .chapters-swiper::-webkit-scrollbar {
     width: 4px;
+    background: transparent;
 }
 
 .teachers-swiper::-webkit-scrollbar-thumb,
 .chapters-swiper::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.3);
-    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
 }
 
-.teachers-swiper .swiper-slide,
-.chapters-swiper .swiper-slide {
-    height: auto;
-    padding: 0;
-    width: 100%;
-    transition: all 0.2s ease;
-}
-
-.teachers-swiper .swiper-slide:hover,
-.chapters-swiper .swiper-slide:hover {
-    transition: all 0.2s ease;
-}
-
+/* Improved swiper pagination */
 .swiper-pagination {
     position: absolute;
     right: 4px;
@@ -837,6 +897,41 @@ button.custom-fullscreen {
     opacity: 1;
 }
 
+/* Enhanced staggered transitions */
+.staggered-fade-move {
+    transition: all 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.staggered-fade-enter-active {
+    transition: all 300ms ease-out;
+}
+
+.staggered-fade-leave-active {
+    transition: all 200ms ease-in;
+    position: absolute;
+}
+
+.staggered-fade-enter-from,
+.staggered-fade-leave-to {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+/* Loading spinner animation */
+.loading-spinner {
+    animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 /* Mobile-specific styles */
 @media (max-width: 1024px) {
     .video-container {
@@ -848,9 +943,25 @@ button.custom-fullscreen {
     .watermark-text {
         font-size: 12px;
     }
+
+    .lg\:hidden.fixed>div {
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .space-y-2>div {
+        padding: 12px;
+        margin-bottom: 8px;
+    }
+
+    /* Smoother mobile transitions */
+    .teachers-swiper .swiper-slide,
+    .chapters-swiper .swiper-slide {
+        transition: transform 0.3s ease;
+    }
 }
 
-/* Ensure mobile menus are full height */
+/* Full height mobile menus */
 .lg\:hidden.fixed {
     top: 0;
     left: 0;
@@ -859,8 +970,13 @@ button.custom-fullscreen {
     z-index: 50;
 }
 
-/* Smooth transitions for mobile menus */
+/* Panel slide transitions */
 .lg\:hidden.fixed>div {
-    transition: transform 0.3s ease-in-out;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Smooth course selection transitions */
+[class*="cursor-pointer"] {
+    transition: all 0.3s ease;
 }
 </style>

@@ -15,7 +15,7 @@ onMounted(async () => {
 
     if (userStore.isLoggedIn) {
       userStore.startInterval();
-  }
+    }
   } catch (error) {
     console.error('Error checking initial auth status:', error);
     await navigateTo('/auth');
