@@ -17,23 +17,26 @@
       <!-- Course List or Detail View -->
       <div v-if="!selectedCourse">
         <!-- Course List Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative">
           <div v-for="course in courses" :key="course.id"
-            class="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow">
+            class="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow border border-gray-100 hover:border-primary">
             <div class="card-body">
               <h2 class="card-title">{{ course.name }}</h2>
-              <div class="badge badge-primary">{{ course.department }}</div>
+              <div class="badge mr-2 absolute -top-2 left-2 border-none"
+                :style="{ backgroundColor: course?.backgroundColor }">
+                {{ course.department }}
+              </div>
               <p class="text-sm mt-2">
-                {{ course?.parts?.length }} parts,
-                {{course?.parts?.reduce((acc, part) => acc + part.episodes.length, 0)}} episodes
+                {{ course?.parts?.length }} جزء,
+                {{course?.parts?.reduce((acc, part) => acc + part.episodes.length, 0)}} حلقة
               </p>
               <div class="card-actions justify-end mt-4">
-                <button class="btn btn-primary" @click="selectCourse(course)">
+                <button class="btn btn-sm btn-primary" @click="selectCourse(course)">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                     <path
                       d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
                   </svg>
-                  Manage Content
+                  إدارة المحتوى
                 </button>
               </div>
             </div>
@@ -61,16 +64,16 @@
           <!-- Left Panel - Parts Navigation -->
           <div class="lg:col-span-3">
             <div class="bg-base-200 rounded-lg p-4 sticky top-4">
-              <h3 class="text-lg font-bold mb-4">Parts</h3>
+              <h3 class="text-lg font-bold mb-4">الأجزاء</h3>
 
               <!-- Add New Part Form -->
               <form @submit.prevent="createPart" class="mb-4">
                 <div class="flex flex-col gap-2">
-                  <input v-model="newPart.name" type="text" placeholder="New part name"
+                  <input v-model="newPart.name" type="text" placeholder="اسم الجزء الجديد"
                     class="input input-bordered w-full" required />
                   <button type="submit" class="btn btn-primary w-full" :disabled="isAddingPart">
                     <span v-if="isAddingPart" class="loading loading-spinner loading-sm mr-1"></span>
-                    Add Part
+                    إضافة جزء
                   </button>
                 </div>
               </form>
@@ -81,7 +84,7 @@
               <div class="divider mb-2"></div>
 
               <div v-if="selectedCourse.parts.length === 0" class="p-4 text-center bg-base-300 rounded-lg">
-                <p class="text-sm opacity-70">No parts yet. Add your first part above.</p>
+                <p class="text-sm opacity-70">لا توجد أجزاء بعد. أضف الجزء الأول أعلاه.</p>
               </div>
 
               <ul class="menu w-full gap-1">
@@ -113,8 +116,8 @@
                           </svg>
                         </label>
                         <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-32">
-                          <li><a @click.stop="renamePart(part)" class="text-primary">Rename</a></li>
-                          <li><a @click.stop="deletePart(part)" class="text-error">Delete</a></li>
+                          <li><a @click.stop="renamePart(part)" class="text-primary">إعادة تسمية</a></li>
+                          <li><a @click.stop="deletePart(part)" class="text-error">حذف</a></li>
                         </ul>
                       </div>
                     </div>
@@ -133,13 +136,13 @@
 
               <!-- Add Episode Form -->
               <form @submit.prevent="createEpisode(activePart)" class="mb-6 bg-base-200 p-4 rounded-lg">
-                <h4 class="font-medium mb-3">Add New Episode</h4>
+                <h4 class="font-medium mb-3">إضافة حلقة جديدة</h4>
                 <div class="flex flex-col sm:flex-row gap-3">
-                  <input v-model="newEpisode[activePart]" type="text" placeholder="Episode name"
+                  <input v-model="newEpisode[activePart]" type="text" placeholder="اسم الحلقة"
                     class="input input-bordered flex-1" required />
                   <button type="submit" class="btn btn-secondary" :disabled="isAddingEpisode[activePart]">
                     <span v-if="isAddingEpisode[activePart]" class="loading loading-spinner loading-sm mr-1"></span>
-                    Add Episode
+                    إضافة حلقة
                   </button>
                 </div>
               </form>
@@ -161,19 +164,19 @@
                       <div>
                         <h5 class="font-semibold">{{ episode.name }}</h5>
                         <div class="text-xs text-base-content/70 mt-1">
-                          {{ episode.videoId ? 'Video uploaded' : 'No video uploaded' }}
+                          {{ episode.videoId ? 'تم رفع الفيديو' : 'لم يتم رفع فيديو' }}
                         </div>
                       </div>
                     </div>
 
                     <div class="flex gap-2 items-center">
                       <label class="label cursor-pointer flex gap-2">
-                        <span class="label-text">Free</span>
+                        <span class="label-text">مجاني</span>
                         <input type="checkbox" v-model="episode.isFree" class="toggle toggle-primary toggle-sm"
                           @change="updateEpisodeIsFree(activePart, episode)" />
                       </label>
                       <label class="label cursor-pointer flex gap-2">
-                        <span class="label-text">Lock</span>
+                        <span class="label-text">قفل</span>
                         <input type="checkbox" v-model="episode.isLocked" class="toggle toggle-warning toggle-sm"
                           @change="updateEpisodeIsLocked(activePart, episode)" />
                       </label>
@@ -221,9 +224,9 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
               </svg>
-              <h3 class="text-xl font-semibold mb-2">Select a part</h3>
+              <h3 class="text-xl font-semibold mb-2">اختر جزءًا</h3>
               <p class="text-base-content/70 max-w-md">
-                Choose a part from the left menu, or create a new one to get started.
+                اختر جزءًا من القائمة على اليسار، أو أنشئ جزءًا جديدًا للبدء.
               </p>
             </div>
           </div>
@@ -233,23 +236,23 @@
       <!-- New Course Modal -->
       <dialog class="modal" :class="{ 'modal-open': showNewCourseModal }">
         <div class="modal-box">
-          <h3 class="font-bold text-lg mb-4">Create New Course</h3>
+          <h3 class="font-bold text-lg mb-4">إنشاء دورة جديدة</h3>
           <form @submit.prevent="createCourse">
             <div class="form-control">
               <label class="label">
-                <span class="label-text">Course Name</span>
+                <span class="label-text">اسم الدورة</span>
               </label>
               <input v-model="newCourse.name" type="text" class="input input-bordered" required />
             </div>
             <div class="form-control mt-4">
               <label class="label">
-                <span class="label-text">Department</span>
+                <span class="label-text">القسم</span>
               </label>
               <input v-model="newCourse.department" type="text" class="input input-bordered" required />
             </div>
             <div class="modal-action">
-              <button type="button" class="btn" @click="showNewCourseModal = false">Cancel</button>
-              <button type="submit" class="btn btn-primary">Create</button>
+              <button type="button" class="btn" @click="showNewCourseModal = false">إلغاء</button>
+              <button type="submit" class="btn btn-primary">إنشاء</button>
             </div>
           </form>
         </div>
@@ -261,17 +264,17 @@
       <!-- Rename Part Modal -->
       <dialog class="modal" :class="{ 'modal-open': showRenamePartModal }">
         <div class="modal-box">
-          <h3 class="font-bold text-lg mb-4">Rename Part</h3>
+          <h3 class="font-bold text-lg mb-4">إعادة تسمية الجزء</h3>
           <form @submit.prevent="confirmRenamePart">
             <div class="form-control">
               <label class="label">
-                <span class="label-text">New Part Name</span>
+                <span class="label-text">اسم الجزء الجديد</span>
               </label>
               <input v-model="renamePartData.newName" type="text" class="input input-bordered" required />
             </div>
             <div class="modal-action">
-              <button type="button" class="btn" @click="cancelRenamePart">Cancel</button>
-              <button type="submit" class="btn btn-primary">Rename</button>
+              <button type="button" class="btn" @click="cancelRenamePart">إلغاء</button>
+              <button type="submit" class="btn btn-primary">إعادة تسمية</button>
             </div>
           </form>
         </div>
@@ -283,13 +286,12 @@
       <!-- Delete Part Confirmation Modal -->
       <dialog class="modal" :class="{ 'modal-open': showDeletePartModal }">
         <div class="modal-box">
-          <h3 class="font-bold text-lg mb-4">Delete Part</h3>
-          <p>Are you sure you want to delete "<span class="font-semibold">{{ deletePartData.name }}</span>" and all its
-            episodes?</p>
-          <p class="text-sm text-error mt-2">This action cannot be undone.</p>
+          <h3 class="font-bold text-lg mb-4">حذف الجزء</h3>
+          <p>هل أنت متأكد أنك تريد حذف "<span class="font-semibold">{{ deletePartData.name }}</span>" وجميع حلقاته؟</p>
+          <p class="text-sm text-error mt-2">لا يمكن التراجع عن هذا الإجراء.</p>
           <div class="modal-action">
-            <button class="btn" @click="cancelDeletePart">Cancel</button>
-            <button class="btn btn-error" @click="confirmDeletePart">Delete</button>
+            <button class="btn" @click="cancelDeletePart">إلغاء</button>
+            <button class="btn btn-error" @click="confirmDeletePart">حذف</button>
           </div>
         </div>
         <form method="dialog" class="modal-backdrop">
@@ -300,17 +302,17 @@
       <!-- Rename Episode Modal -->
       <dialog class="modal" :class="{ 'modal-open': showRenameEpisodeModal }">
         <div class="modal-box">
-          <h3 class="font-bold text-lg mb-4">Rename Episode</h3>
+          <h3 class="font-bold text-lg mb-4">إعادة تسمية الحلقة</h3>
           <form @submit.prevent="confirmRenameEpisode">
             <div class="form-control">
               <label class="label">
-                <span class="label-text">New Episode Name</span>
+                <span class="label-text">اسم الحلقة الجديد</span>
               </label>
               <input v-model="renameEpisodeData.newName" type="text" class="input input-bordered" required />
             </div>
             <div class="modal-action">
-              <button type="button" class="btn" @click="cancelRenameEpisode">Cancel</button>
-              <button type="submit" class="btn btn-primary">Rename</button>
+              <button type="button" class="btn" @click="cancelRenameEpisode">إلغاء</button>
+              <button type="submit" class="btn btn-primary">إعادة تسمية</button>
             </div>
           </form>
         </div>
@@ -322,12 +324,12 @@
       <!-- Delete Episode Confirmation Modal -->
       <dialog class="modal" :class="{ 'modal-open': showDeleteEpisodeModal }">
         <div class="modal-box">
-          <h3 class="font-bold text-lg mb-4">Delete Episode</h3>
-          <p>Are you sure you want to delete "<span class="font-semibold">{{ deleteEpisodeData.name }}</span>"?</p>
-          <p class="text-sm text-error mt-2">This action cannot be undone.</p>
+          <h3 class="font-bold text-lg mb-4">حذف الحلقة</h3>
+          <p>هل أنت متأكد أنك تريد حذف "<span class="font-semibold">{{ deleteEpisodeData.name }}</span>"؟</p>
+          <p class="text-sm text-error mt-2">لا يمكن التراجع عن هذا الإجراء.</p>
           <div class="modal-action">
-            <button class="btn" @click="cancelDeleteEpisode">Cancel</button>
-            <button class="btn btn-error" @click="confirmDeleteEpisode">Delete</button>
+            <button class="btn" @click="cancelDeleteEpisode">إلغاء</button>
+            <button class="btn btn-error" @click="confirmDeleteEpisode">حذف</button>
           </div>
         </div>
         <form method="dialog" class="modal-backdrop">
@@ -413,7 +415,7 @@ async function fetchCourses() {
     const { data } = await adminApi.getCourses()
     courses.value = Array.isArray(data) ? data : [data]
   } catch (error) {
-    handleApiError(error, 'Failed to fetch courses')
+    handleApiError(error, 'فشل في تحميل البيانات')
   }
 }
 
@@ -432,9 +434,9 @@ async function createCourse() {
     courses.value.push(data)
     newCourse.value = { name: '', department: '' }
     showNewCourseModal.value = false
-    showToast('Course created successfully')
+    showToast('تم إنشاء الدورة بنجاح')
   } catch (error) {
-    handleApiError(error, 'Failed to create course')
+    handleApiError(error, 'فشل في إنشاء الدورة')
   }
 }
 
@@ -453,9 +455,9 @@ async function createPart() {
     if (courseIndex !== -1) {
       courses.value[courseIndex] = { ...selectedCourse.value }
     }
-    showToast('Part created successfully')
+    showToast('تم إنشاء الجزء بنجاح')
   } catch (error) {
-    handleApiError(error, 'Failed to create part')
+    handleApiError(error, 'فشل في إنشاء الجزء')
   } finally {
     isAddingPart.value = false
   }
@@ -484,10 +486,10 @@ async function createEpisode(partId: string) {
       if (courseIndex !== -1 && selectedCourse.value) {
         courses.value[courseIndex] = { ...selectedCourse.value }
       }
-      showToast('Episode created successfully')
+      showToast('تم إنشاء الحلقة بنجاح')
     }
   } catch (error) {
-    handleApiError(error, 'Failed to create episode')
+    handleApiError(error, 'فشل في إنشاء الحلقة')
   } finally {
     isAddingEpisode.value[partId] = false
   }
@@ -515,13 +517,13 @@ function handleVideoUploadSuccess(partId: string, episodeId: string, videoUrl: s
   if (courseIndex !== -1 && selectedCourse.value) {
     courses.value[courseIndex] = { ...selectedCourse.value }
   }
-  showToast('Video uploaded successfully')
+  showToast('تم رفع الفيديو بنجاح')
 }
 
 // Handle video upload error
 function handleVideoUploadError(error: string) {
   console.error('Video upload failed:', error)
-  showToast('Failed to upload video', 'error')
+  showToast('فشل في رفع الفيديو', 'error')
 }
 
 // Select course for editing
@@ -571,9 +573,9 @@ const confirmRenamePart = async () => {
         courses.value[courseIndex] = { ...selectedCourse.value }
       }
     }
-    showToast('Part renamed successfully')
+    showToast('تم إعادة تسمية الجزء بنجاح')
   } catch (error) {
-    handleApiError(error, 'Failed to rename part')
+    handleApiError(error, 'فشل في إعادة تسمية الجزء')
   } finally {
     showRenamePartModal.value = false
     renamePartData.value = { partId: '', newName: '', oldName: '' }
@@ -615,9 +617,9 @@ const confirmDeletePart = async () => {
     if (activePart.value === deletePartData.value.partId) {
       activePart.value = selectedCourse.value.parts.length > 0 ? selectedCourse.value.parts[0].id : null
     }
-    showToast('Part deleted successfully')
+    showToast('تم حذف الجزء بنجاح')
   } catch (error) {
-    handleApiError(error, 'Failed to delete part')
+    handleApiError(error, 'فشل في حذف الجزء')
   } finally {
     showDeletePartModal.value = false
     deletePartData.value = { partId: '', name: '' }
@@ -663,9 +665,9 @@ const confirmRenameEpisode = async () => {
     if (courseIndex !== -1 && selectedCourse.value) {
       courses.value[courseIndex] = { ...selectedCourse.value }
     }
-    showToast('Episode renamed successfully')
+    showToast('تم إعادة تسمية الحلقة بنجاح')
   } catch (error) {
-    handleApiError(error, 'Failed to rename episode')
+    handleApiError(error, 'فشل في إعادة تسمية الحلقة')
   } finally {
     showRenameEpisodeModal.value = false
     renameEpisodeData.value = { partId: '', episodeId: '', newName: '', oldName: '' }
@@ -706,9 +708,9 @@ const confirmDeleteEpisode = async () => {
     if (courseIndex !== -1 && selectedCourse.value) {
       courses.value[courseIndex] = { ...selectedCourse.value }
     }
-    showToast('Episode deleted successfully')
+    showToast('تم حذف الحلقة بنجاح')
   } catch (error) {
-    handleApiError(error, 'Failed to delete episode')
+    handleApiError(error, 'فشل في حذف الحلقة')
   } finally {
     showDeleteEpisodeModal.value = false
     deleteEpisodeData.value = { partId: '', episodeId: '', name: '' }
@@ -735,7 +737,7 @@ function updateEpisodeIsFree(partId: string, episode: Episode) {
 
   // Update on the server
   adminApi.updateEpisodeIsFree(selectedCourse.value.id, partId, episode.id, episode.isFree).catch(error => {
-    handleApiError(error, 'Failed to update episode free status')
+    handleApiError(error, 'فشل في تحديث حالة مجانية الحلقة')
   })
 }
 
@@ -755,7 +757,7 @@ function updateEpisodeIsLocked(partId: string, episode: Episode) {
   const currentLockValue = episode.isLocked;
   console.log('Updating episode lock status:', {
     courseId: selectedCourse.value.id,
-    partId: partId, 
+    partId: partId,
     episodeId: episode.id,
     isLocked: currentLockValue
   });
@@ -781,18 +783,18 @@ function updateEpisodeIsLocked(partId: string, episode: Episode) {
       })
       .catch(error => {
         console.error('Lock status update error:', error);
-        
+
         // Revert UI change on error
         if (episodeIndex !== -1) {
           part.episodes[episodeIndex].isLocked = !currentLockValue;
-          
+
           // Also update in main list
           if (courseIndex !== -1 && selectedCourse.value) {
             courses.value[courseIndex] = { ...selectedCourse.value };
           }
         }
-        
-        handleApiError(error, 'Failed to update episode lock status');
+
+        handleApiError(error, 'فشل في تحديث حالة قفل الحلقة');
       });
   } catch (err) {
     console.error('Exception when calling API:', err);
@@ -800,7 +802,7 @@ function updateEpisodeIsLocked(partId: string, episode: Episode) {
     if (episodeIndex !== -1) {
       part.episodes[episodeIndex].isLocked = !currentLockValue;
     }
-    showToast('Failed to update episode lock status', 'error');
+    showToast('فشل في تحديث حالة قفل الحلقة', 'error');
   }
 }
 
