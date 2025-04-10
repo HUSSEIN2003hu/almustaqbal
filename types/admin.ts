@@ -21,6 +21,7 @@ export interface Course {
   id: string
   name: string
   department: string
+  backgroundColor?: string
   parts: Part[]
   createdAt: string
   updatedAt: string

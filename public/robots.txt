@@ -1,1 +1,4 @@
+User-agent: *
+Allow: /
 
+Sitemap: https://almustaqbal.edu/sitemap.xml
