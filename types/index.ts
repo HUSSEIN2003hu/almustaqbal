@@ -4,6 +4,7 @@ export interface Episode {
   link?: string
   videoId?: string
   isFree: boolean
+  isLocked: boolean
   createdAt: Date
   updatedAt: Date
 }

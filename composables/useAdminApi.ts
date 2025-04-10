@@ -43,10 +43,11 @@ export function useAdminApi() {
     return await api.delete(`/courses/${courseId}/parts/${partId}`)
   }
 
-  const createEpisode = async (courseId: string, partId: string, name: string, isFree: boolean) => {
+  const createEpisode = async (courseId: string, partId: string, name: string, isFree: boolean, isLocked: boolean = false) => {
     return await api.post<Episode>(`/courses/${courseId}/parts/${partId}/episodes`, {
       name,
-      isFree
+      isFree,
+      isLocked
     })
   }
 
@@ -70,6 +71,10 @@ export function useAdminApi() {
     return await updateEpisode(courseId, partId, episodeId, { isFree })
   }
 
+  const updateEpisodeIsLocked = async (courseId: string, partId: string, episodeId: string, isLocked: boolean) => {
+    return await updateEpisode(courseId, partId, episodeId, { isLocked })
+  }
+
   const getUsers = async () => {
     return await api.get<User[]>('/users')
   }
@@ -89,6 +94,7 @@ export function useAdminApi() {
     renamePart,
     renameEpisode,
     updateEpisodeIsFree,
+    updateEpisodeIsLocked,
     getUsers
   }
 } 

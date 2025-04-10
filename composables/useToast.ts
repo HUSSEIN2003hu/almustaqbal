@@ -20,6 +20,7 @@ const arabicMessages: Record<string, string> = {
   'Episode deleted successfully': 'تم حذف الدرس بنجاح',
   'Failed to delete episode': 'فشل في حذف الدرس',
   'Failed to update episode free status': 'فشل في تحديث حالة الدرس المجاني',
+  'Failed to update episode lock status': 'فشل في تحديث حالة قفل الدرس',
   'Video uploaded successfully': 'تم رفع الفيديو بنجاح',
   'Failed to upload video': 'فشل في رفع الفيديو'
 }

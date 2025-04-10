@@ -31,6 +31,7 @@ interface Episode {
   id?: string;
   name: string;
   isFree: boolean;
+  isLocked?: boolean;
   videoId?: string;
   videoUrl?: string;
 }
@@ -403,7 +404,8 @@ export async function createEpisode(
   courseId: string,
   partId: string,
   name: string,
-  isFree: boolean = false
+  isFree: boolean = false,
+  isLocked: boolean = false
 ) {
   const { validateAdminPassword } = useAdminAuth();
   validateAdminPassword(event);
@@ -425,6 +427,7 @@ export async function createEpisode(
       .add({
         name,
         isFree,
+        isLocked,
         createdAt: Date.now(),
       });
 
@@ -443,7 +446,7 @@ export async function updateEpisode(
   courseId: string,
   partId: string,
   episodeId: string,
-  data: { name?: string; isFree?: boolean; videoId?: string; videoUrl?: string }
+  data: { name?: string; isFree?: boolean; isLocked?: boolean; videoId?: string; videoUrl?: string }
 ) {
   const { validateAdminPassword } = useAdminAuth();
   validateAdminPassword(event);
@@ -467,6 +470,7 @@ export async function updateEpisode(
     const updateData: Record<string, any> = {};
     if (data.name !== undefined) updateData.name = data.name;
     if (data.isFree !== undefined) updateData.isFree = data.isFree;
+    if (data.isLocked !== undefined) updateData.isLocked = data.isLocked;
     if (data.videoId !== undefined) updateData.videoId = data.videoId;
     if (data.videoUrl !== undefined) updateData.videoUrl = data.videoUrl;
 

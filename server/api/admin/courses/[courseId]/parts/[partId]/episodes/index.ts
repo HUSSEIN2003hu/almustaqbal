@@ -17,6 +17,9 @@ export default defineEventHandler(async (event) => {
   switch (method) {
     case 'POST':
       const body = await readBody(event)
+      if (body.isLocked === undefined) {
+        body.isLocked = false
+      }
       return await courseService.addEpisode(courseId, partId, body)
     
     default:

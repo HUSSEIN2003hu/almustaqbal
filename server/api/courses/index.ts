@@ -25,17 +25,22 @@ export default defineEventHandler(async (event) => {
     const courses = await courseService.getCourses();
 
     // Links entfernen für Kurse ohne Zugriff
+    const userCoursesSet = new Set(userCourses); // Use Set for faster lookups
+
     for (const course of courses) {
-      const hasAccess = userCourses.includes(course.id);
+      const hasAccess = userCoursesSet.has(course.id);
       console.log('Course ID:', course.id, 'Has access:', hasAccess); // Debugging-Ausgabe
-      
-      for (const part of course.parts) {
-        for (const episode of part.episodes) {
-          if (!hasAccess && !episode.isFree) {
-            episode.link = undefined;
-          }
+
+      course.parts.forEach(part => {
+      part.episodes = part.episodes
+        .map(episode => {
+        if (!hasAccess && !episode.isFree) {
+          return { ...episode, link: undefined }; // Remove link for locked episodes
         }
-      }
+        return episode;
+        })
+        .filter(episode => !episode.isLocked); // Remove locked episodes
+      });
     }
 
     return courses.sort((a, b) => {

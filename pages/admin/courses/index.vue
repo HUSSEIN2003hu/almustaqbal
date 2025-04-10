@@ -172,6 +172,11 @@
                         <input type="checkbox" v-model="episode.isFree" class="toggle toggle-primary toggle-sm"
                           @change="updateEpisodeIsFree(activePart, episode)" />
                       </label>
+                      <label class="label cursor-pointer flex gap-2">
+                        <span class="label-text">Lock</span>
+                        <input type="checkbox" v-model="episode.isLocked" class="toggle toggle-warning toggle-sm"
+                          @change="updateEpisodeIsLocked(activePart, episode)" />
+                      </label>
                       <div v-if="!episode.videoId" class="ml-4">
                         <VideoUploader :course-id="selectedCourse?.id" :part-id="activePart || ''"
                           :episode-id="episode.id" @success="(videoUrl) => handleVideoUploadEvent(episode, videoUrl)"
@@ -467,7 +472,7 @@ async function createEpisode(partId: string) {
 
   isAddingEpisode.value[partId] = true
   try {
-    const { data } = await adminApi.createEpisode(selectedCourse.value.id, partId, newEpisode.value[partId], false)
+    const { data } = await adminApi.createEpisode(selectedCourse.value.id, partId, newEpisode.value[partId], false, false)
 
     const part = selectedCourse.value.parts.find((p: Part) => p.id === partId)
     if (part) {
@@ -732,6 +737,71 @@ function updateEpisodeIsFree(partId: string, episode: Episode) {
   adminApi.updateEpisodeIsFree(selectedCourse.value.id, partId, episode.id, episode.isFree).catch(error => {
     handleApiError(error, 'Failed to update episode free status')
   })
+}
+
+function updateEpisodeIsLocked(partId: string, episode: Episode) {
+  if (!selectedCourse.value || !selectedCourse.value.parts) {
+    console.error('No selected course or parts available');
+    return;
+  }
+
+  const part = selectedCourse.value.parts.find((p: Part) => p.id === partId);
+  if (!part) {
+    console.error('Part not found:', partId);
+    return;
+  }
+
+  // Store the current value for potential rollback
+  const currentLockValue = episode.isLocked;
+  console.log('Updating episode lock status:', {
+    courseId: selectedCourse.value.id,
+    partId: partId, 
+    episodeId: episode.id,
+    isLocked: currentLockValue
+  });
+
+  // Update UI immediately for responsiveness
+  const episodeIndex = part.episodes.findIndex((e: Episode) => e.id === episode.id);
+  if (episodeIndex !== -1) {
+    part.episodes[episodeIndex].isLocked = currentLockValue;
+  }
+
+  // Update course in main list
+  const courseIndex = courses.value.findIndex((c: Course) => c.id === selectedCourse.value?.id);
+  if (courseIndex !== -1 && selectedCourse.value) {
+    courses.value[courseIndex] = { ...selectedCourse.value };
+  }
+
+  // Update on the server
+  try {
+    adminApi.updateEpisodeIsLocked(selectedCourse.value.id, partId, episode.id, currentLockValue)
+      .then(response => {
+        console.log('Lock status update successful:', response);
+        // Success toast can be added here if needed
+      })
+      .catch(error => {
+        console.error('Lock status update error:', error);
+        
+        // Revert UI change on error
+        if (episodeIndex !== -1) {
+          part.episodes[episodeIndex].isLocked = !currentLockValue;
+          
+          // Also update in main list
+          if (courseIndex !== -1 && selectedCourse.value) {
+            courses.value[courseIndex] = { ...selectedCourse.value };
+          }
+        }
+        
+        handleApiError(error, 'Failed to update episode lock status');
+      });
+  } catch (err) {
+    console.error('Exception when calling API:', err);
+    // Revert UI change on exception
+    if (episodeIndex !== -1) {
+      part.episodes[episodeIndex].isLocked = !currentLockValue;
+    }
+    showToast('Failed to update episode lock status', 'error');
+  }
 }
 
 // Computed property to get the active part
