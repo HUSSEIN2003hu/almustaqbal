@@ -26,7 +26,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-10 p-8 relative max-w-7xl mx-auto [perspective:1000px]">
           <TransitionGroup name="teacher-fade">
-            <div v-for="(teacher, index) in visibleTeachers" :key="teacher.name + teacher.subject"
+            <div v-for="(teacher, index) in visibleTeachers" :key="teacher.name + teacher.subjects[0]"
               class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform-gpu relative group"
               :class="[
                 index === 0 ? '' : '',
@@ -37,8 +37,17 @@
                 class="w-full h-[280px] object-cover transition-transform duration-300 group-hover:scale-105">
               <div class="p-5 flex flex-col items-start gap-2 bg-white/95 border-t border-gray-100 relative">
                 <span class="absolute right-4 top-5 text-sm" :style="{ color: teacher.color }">▮</span>
-                <h3 class="text-lg font-semibold text-gray-800">{{ teacher.name }}</h3>
-                <p class="text-sm text-gray-600">{{ teacher.subject }}</p>
+                <h3 class="text-lg font-semibold text-gray-800 mb-1">{{ teacher.name }}</h3>
+                <div class="flex flex-wrap gap-2">
+                  <span v-for="sub in teacher.subjects" :key="sub" class="px-3 py-1 rounded-full text-xs font-medium"
+                    :style="{
+                      backgroundColor: `${teacher.color}15`,
+                      color: teacher.color,
+                      border: `1px solid ${teacher.color}30`
+                    }">
+                    {{ sub }}
+                  </span>
+                </div>
               </div>
             </div>
           </TransitionGroup>
@@ -58,43 +67,43 @@ import { ref, onMounted, onUnmounted } from 'vue'
 const teachers = ref([
   {
     name: "الاستاذ محسن اسماعيل",
-    subject: "تاريخ وجغرافية واقتصاد",
+    subjects: ["تاريخ", "جغرافية", "اقتصاد"],
     image: "/assess/img/الأستاذ محسن أسماعيل _ تاريخ _ جغرافية _ اقتصاد.jpg",
     color: "#FF6347"
   },
   {
     name: "الاستاذ حسنين اللامي",
-    subject: "كيمياء",
+    subjects: ["كيمياء"],
     image: "/assess/img/الأستاذ  حسنين اللامي _ كيمياء.jpg",
     color: "#1E90FF"
   },
   {
     name: "الاستاذ كرار خضير العامري",
-    subject: "اللغة الانكليزية",
+    subjects: ["اللغة الانكليزية"],
     image: "/assess/img/الأستاذ  كرار خضير العامري _ اللغة الانكليزية.jpg",
     color: "#8A2BE2"
   },
   {
     name: "الاستاذة فاطمة الموسوي",
-    subject: "اللغة العربية",
+    subjects: ["اللغة العربية"],
     image: "/assess/img/الأستاذة فاطمة الموسوي _ اللغة العربية .jpg",
     color: "#FF4500"
   },
   {
     name: "الاستاذ جودت نجدت",
-    subject: "رياضيات",
+    subjects: ["رياضيات"],
     image: "/assess/img/الأستاذ جودت نجدت _ رياضيات.jpg",
     color: "#DA70D6"
   },
   {
     name: "الاستاذ عامر عدنان الجبوري",
-    subject: "فيزياء",
+    subjects: ["فيزياء"],
     image: "/assess/img/الأستاذ عامرعدنان الجبوري _ فيزياء.jpg",
     color: "#00CED1"
   },
   {
     name: "الاستاذة مريم الربيعي",
-    subject: "الإسلامية",
+    subjects: ["الإسلامية"],
     image: "/assess/img/الأستاذة مريم الربيعي _ الاسلامية.jpg",
     color: "#0FD794"
   }
@@ -115,7 +124,7 @@ const rotateTeachers = () => {
 
 onMounted(() => {
   rotateTeachers() // Initial display
-  intervalId = setInterval(rotateTeachers, 3000) // Rotate every 2 seconds
+  intervalId = setInterval(rotateTeachers, 4000) // Rotate every 4 seconds for better readability
 })
 
 onUnmounted(() => {
@@ -127,17 +136,25 @@ onUnmounted(() => {
 .teacher-fade-move,
 .teacher-fade-enter-active,
 .teacher-fade-leave-active {
-  transition: all 0.8s ease;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.teacher-fade-enter-from,
+.teacher-fade-enter-from {
+  opacity: 0;
+  transform: translateX(30px) scale(0.9);
+}
+
 .teacher-fade-leave-to {
   opacity: 0;
-  transform: translateX(30px);
+  transform: translateX(-30px) scale(0.9);
 }
 
 .teacher-fade-leave-active {
   position: absolute;
+}
+
+.teacher-fade-move {
+  transition: transform 0.8s ease;
 }
 
 @media (max-width: 768px) {
