@@ -30,17 +30,13 @@
           class="hidden lg:grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8 lg:gap-12 p-2 relative mx-auto [perspective:2000px] max-w-7xl">
           <TransitionGroup name="teacher-fade">
             <div v-for="(teacher, index) in visibleTeachers.slice(0, 2)" :key="teacher.name + teacher.subjects[0]"
-              class="bg-white rounded-2xl overflow-hidden transition-all duration-500 ease-out transform-gpu group relative preserve-3d"
-              :class="[
-                'hover:-translate-y-2 sm:hover:-translate-y-4',
-                index === 0 ? 'rotate-y-3 sm:rotate-y-6' : '',
-                index === 1 ? '-rotate-y-3 sm:-rotate-y-6' : ''
-              ]" :style="{
+              class="bg-white rounded-2xl overflow-hidden transition-all duration-500 ease-out transform-gpu group relative"
+              :style="{
                 transform: 'rotate3d(.5,-.866,0,15deg) rotate(1deg)',
                 boxShadow: '2em 4em 6em -2em rgba(0,0,0,.5), 1em 2em 3.5em -2.5em rgba(0,0,0,.5)',
                 borderRadius: '.5em',
                 transition: 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)'
-              }" @mousemove="handleMouseMove($event, index)" @mouseleave="handleMouseLeave(index)">
+              }">
               <div class="absolute inset-0 bg-gradient-to-r" :style="{
                 background: `linear-gradient(105deg, 
                     ${teacher.color}15 0%, 
@@ -251,14 +247,6 @@ onUnmounted(() => {
   transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.preserve-3d:hover {
-  transform:
-    rotate3d(0, 0, 0, 0deg) rotate(0deg) translateY(-30px) scale(1.08);
-  box-shadow:
-    0 35px 60px -15px rgba(0, 0, 0, 0.3),
-    0 0 20px rgba(0, 0, 0, 0.1);
-}
-
 .rotate-y-12 {
   transform: rotateY(12deg);
 }
@@ -319,125 +307,6 @@ onUnmounted(() => {
 
 .animate-pulse-slow {
   animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@media (max-width: 768px) {
-  .transform-gpu {
-    transform: none !important;
-  }
-
-  .preserve-3d {
-    transform-style: flat;
-  }
-
-  .floating-element {
-    animation: none;
-    transform: none !important;
-  }
-
-  .shine-effect {
-    display: none;
-  }
-
-  .card-content {
-    transform: none !important;
-  }
-
-  .teacher-fade-enter-from,
-  .teacher-fade-leave-to {
-    transform: translateY(50px) scale(0.9) !important;
-    filter: blur(5px);
-  }
-
-  .grid {
-    gap: 1.5rem;
-  }
-
-  .preserve-3d:hover {
-    transform: translateY(-15px) scale(1.05) !important;
-  }
-}
-
-/* Small screens */
-@media (max-width: 640px) {
-  .grid {
-    gap: 1rem;
-  }
-
-  .p-4 {
-    padding: 1rem;
-  }
-
-  .preserve-3d {
-    transform: none !important;
-    perspective: none;
-  }
-
-  .preserve-3d:hover {
-    transform: translateY(-10px) scale(1.02) !important;
-  }
-
-  .card-content {
-    transform: none !important;
-  }
-
-  .floating-element {
-    animation: none;
-    transform: none !important;
-  }
-
-  .teacher-fade-enter-from,
-  .teacher-fade-leave-to {
-    transform: translateY(20px) scale(0.95) !important;
-    filter: blur(3px);
-  }
-}
-
-@media (min-width: 641px) and (max-width: 1024px) {
-  .preserve-3d {
-    perspective: 1500px;
-  }
-
-  .preserve-3d:hover {
-    transform: translateY(-15px) scale(1.05) !important;
-  }
-
-  .card-content {
-    transform: translateZ(20px);
-  }
-
-  .preserve-3d:hover .card-content {
-    transform: translateZ(40px);
-  }
-
-  .teacher-fade-enter-from,
-  .teacher-fade-leave-to {
-    transform: translateX(30px) scale(0.9) rotateY(30deg) translateZ(-100px);
-  }
-}
-
-@media (min-width: 1025px) {
-  .preserve-3d {
-    perspective: 2000px;
-  }
-
-  .preserve-3d:hover {
-    transform:
-      rotate3d(0, 0, 0, 0deg) rotate(0deg) translateY(-30px) scale(1.08);
-  }
-
-  .card-content {
-    transform: translateZ(30px);
-  }
-
-  .preserve-3d:hover .card-content {
-    transform: translateZ(80px);
-  }
-
-  .teacher-fade-enter-from,
-  .teacher-fade-leave-to {
-    transform: translateX(100px) scale(0.8) rotateY(60deg) translateZ(-200px);
-  }
 }
 
 /* Responsive image sizes */
@@ -532,66 +401,9 @@ h3 {
   }
 }
 
-.shine-effect {
-  background: linear-gradient(90deg,
-      transparent,
-      rgba(255, 255, 255, 0.2),
-      transparent);
-  transform: translateX(-100%);
-  animation: shine 3s infinite;
-}
-
-@keyframes shine {
-  100% {
-    transform: translateX(200%);
-  }
-}
-
 .card-content {
   transform: translateZ(30px);
   transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.preserve-3d:hover .card-content {
-  transform: translateZ(80px);
-}
-
-.preserve-3d:hover img {
-  transform: scale(1.15);
-  filter: brightness(1.15) contrast(1.1);
-  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.preserve-3d:hover .floating-element {
-  transform: translateY(-20px) rotate(20deg) scale(1.2);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.preserve-3d:hover h3 {
-  transform: translateX(15px);
-  color: var(--teacher-color);
-  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.preserve-3d:hover .subject-badge {
-  transform: translateY(-8px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* Enhanced hover effects */
-.preserve-3d::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  transform: translateX(-100%);
-  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.preserve-3d:hover::before {
-  transform: translateX(100%);
 }
 
 /* Enhance background decorations */
