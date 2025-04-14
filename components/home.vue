@@ -24,37 +24,87 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 p-8 relative max-w-7xl mx-auto [perspective:1000px]">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 p-8 relative max-w-7xl mx-auto [perspective:2000px]">
           <TransitionGroup name="teacher-fade">
             <div v-for="(teacher, index) in visibleTeachers" :key="teacher.name + teacher.subjects[0]"
-              class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform-gpu relative group"
+              class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform-gpu group relative preserve-3d"
               :class="[
-                index === 0 ? '' : '',
-                index === 1 ? 'translate-y-8' : '',
-                index === 2 ? '-translate-y-8' : ''
-              ]">
-              <img :src="teacher.image" :alt="teacher.name"
-                class="w-full h-[280px] object-cover transition-transform duration-300 group-hover:scale-105">
-              <div class="p-5 flex flex-col items-start gap-2 bg-white/95 border-t border-gray-100 relative">
-                <span class="absolute right-4 top-5 text-sm" :style="{ color: teacher.color }">▮</span>
-                <h3 class="text-lg font-semibold text-gray-800 mb-1">{{ teacher.name }}</h3>
-                <div class="flex flex-wrap gap-2">
-                  <span v-for="sub in teacher.subjects" :key="sub" class="px-3 py-1 rounded-full text-xs font-medium"
-                    :style="{
-                      backgroundColor: `${teacher.color}15`,
-                      color: teacher.color,
-                      border: `1px solid ${teacher.color}30`
-                    }">
-                    {{ sub }}
+                'hover:-translate-y-2 hover:rotate-y-12 hover:rotate-x-12',
+                index === 0 ? 'rotate-y-6' : '',
+                index === 1 ? 'translate-y-8 -rotate-y-6' : '',
+                index === 2 ? '-translate-y-8 rotate-y-6' : ''
+              ]" @mousemove="handleMouseMove($event, index)" @mouseleave="handleMouseLeave(index)">
+              <div class="absolute inset-0 bg-gradient-to-r" :style="{
+                background: `linear-gradient(105deg, 
+                    ${teacher.color}15 0%, 
+                    transparent 35%,
+                    transparent 65%,
+                    ${teacher.color}15 100%)`,
+                opacity: cards[index]?.hover ? 1 : 0,
+                transition: 'opacity 0.3s ease'
+              }">
+              </div>
+              <div class="card-content relative transform-gpu transition-transform duration-300"
+                :style="cards[index]?.transform">
+                <!-- Floating overlay with teacher's subject icon -->
+                <div
+                  class="absolute right-3 top-5 w-16 h-16 bg-white rounded-2xl shadow-lg transform-gpu rotate-12 z-10 flex items-center justify-center floating-element"
+                  :style="{
+                    backgroundColor: `${teacher.color}15`,
+                    border: `2px solid ${teacher.color}30`,
+                  }">
+                  <span class="text-2xl" :style="{ color: teacher.color }">
+                    {{ getSubjectEmoji(teacher.subjects[0]) }}
                   </span>
+                </div>
+
+                <!-- 3D layered image container -->
+                <div class="relative overflow-hidden">
+                  <!-- Background blur layer -->
+                  <div class="absolute inset-0 filter blur-md scale-105"
+                    :style="{ backgroundImage: `url(${teacher.image})`, backgroundSize: 'cover', opacity: 0.3 }">
+                  </div>
+
+                  <!-- Main image -->
+                  <img :src="teacher.image" :alt="teacher.name"
+                    class="w-full h-[280px] object-cover transition-all duration-300 group-hover:scale-105 relative z-1">
+
+                  <!-- Overlay gradient -->
+                  <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 z-2"></div>
+                </div>
+
+                <div
+                  class="p-5 flex flex-col items-start gap-2 bg-white/95 border-t border-gray-100 relative backdrop-blur-sm">
+                  <!-- 3D floating status indicator -->
+                  <h3
+                    class="text-lg font-semibold text-gray-800 mb-1 transform-gpu group-hover:translate-x-1 transition-transform duration-300">
+                    {{ teacher.name }}
+                  </h3>
+
+                  <!-- Enhanced subject badges -->
+                  <div class="flex flex-wrap gap-2">
+                    <span v-for="sub in teacher.subjects" :key="sub" class="px-3 py-1 rounded-full text-xs font-medium transform-gpu transition-all duration-300 
+                        hover:scale-110 hover:-translate-y-1 hover:rotate-2 relative overflow-hidden group/badge"
+                      :style="{
+                        backgroundColor: `${teacher.color}15`,
+                        color: teacher.color,
+                        border: `1px solid ${teacher.color}30`,
+                        boxShadow: `0 2px 4px ${teacher.color}10`
+                      }">
+                      <!-- Badge shine effect -->
+                      <div class="absolute inset-0 w-full h-full shine-effect"></div>
+                      {{ sub }}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </TransitionGroup>
 
-          <!-- Background decorations -->
-          <div class="absolute -top-12 -right-12 w-48 h-48 bg-[#5B6EF5] rounded-full -z-10 blur"></div>
-          <div class="absolute -bottom-8 -left-8 w-36 h-36 bg-[#FFB74D] rounded-full -z-10 blur"></div>
+          <!-- Enhanced background decorations -->
+          <div class="absolute -top-12 -right-12 w-48 h-48 bg-[#5B6EF5] rounded-full -z-10 blur-md animate-pulse"></div>
+          <div class="absolute -bottom-8 -left-8 w-36 h-36 bg-[#FFB74D] rounded-full -z-10 blur-md animate-pulse-slow">
+          </div>
         </div>
       </div>
     </div>
@@ -109,9 +159,46 @@ const teachers = ref([
   }
 ])
 
+const cards = ref([])
 const visibleTeachers = ref([])
 let currentIndex = 0
 let intervalId = null
+
+const initializeCards = () => {
+  cards.value = Array(3).fill().map(() => ({
+    transform: '',
+    hover: false
+  }))
+}
+
+const handleMouseMove = (e, index) => {
+  if (!cards.value[index]) return
+
+  const card = e.currentTarget
+  const rect = card.getBoundingClientRect()
+  const x = e.clientX - rect.left
+  const y = e.clientY - rect.top
+
+  const centerX = rect.width / 2
+  const centerY = rect.height / 2
+
+  const rotateX = (y - centerY) / 20
+  const rotateY = (centerX - x) / 20
+
+  cards.value[index].transform = `
+    perspective(1000px)
+    scale3d(1.05, 1.05, 1.05)
+    rotateX(${rotateX}deg)
+    rotateY(${rotateY}deg)
+  `
+  cards.value[index].hover = true
+}
+
+const handleMouseLeave = (index) => {
+  if (!cards.value[index]) return
+  cards.value[index].transform = ''
+  cards.value[index].hover = false
+}
 
 const rotateTeachers = () => {
   visibleTeachers.value = [
@@ -122,9 +209,25 @@ const rotateTeachers = () => {
   currentIndex = (currentIndex + 1) % teachers.value.length
 }
 
+const getSubjectEmoji = (subject) => {
+  const emojiMap = {
+    'تاريخ': '📚',
+    'جغرافية': '🌍',
+    'اقتصاد': '📊',
+    'كيمياء': '🧪',
+    'اللغة الانكليزية': '🔤',
+    'اللغة العربية': '📝',
+    'رياضيات': '➗',
+    'فيزياء': '⚡',
+    'الإسلامية': '☪️',
+  }
+  return emojiMap[subject] || '📚'
+}
+
 onMounted(() => {
-  rotateTeachers() // Initial display
-  intervalId = setInterval(rotateTeachers, 4000) // Rotate every 4 seconds for better readability
+  initializeCards()
+  rotateTeachers()
+  intervalId = setInterval(rotateTeachers, 4000)
 })
 
 onUnmounted(() => {
@@ -133,6 +236,27 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.preserve-3d {
+  transform-style: preserve-3d;
+  perspective: 2000px;
+}
+
+.rotate-y-12 {
+  transform: rotateY(12deg);
+}
+
+.rotate-x-12 {
+  transform: rotateX(12deg);
+}
+
+.rotate-y-6 {
+  transform: rotateY(6deg);
+}
+
+.-rotate-y-6 {
+  transform: rotateY(-6deg);
+}
+
 .teacher-fade-move,
 .teacher-fade-enter-active,
 .teacher-fade-leave-active {
@@ -141,12 +265,12 @@ onUnmounted(() => {
 
 .teacher-fade-enter-from {
   opacity: 0;
-  transform: translateX(30px) scale(0.9);
+  transform: translateX(30px) scale(0.9) rotateY(45deg) translateZ(-100px);
 }
 
 .teacher-fade-leave-to {
   opacity: 0;
-  transform: translateX(-30px) scale(0.9);
+  transform: translateX(-30px) scale(0.9) rotateY(-45deg) translateZ(-100px);
 }
 
 .teacher-fade-leave-active {
@@ -157,9 +281,115 @@ onUnmounted(() => {
   transition: transform 0.8s ease;
 }
 
+@keyframes pulse-slow {
+
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
 @media (max-width: 768px) {
   .transform-gpu {
     transform: none !important;
+  }
+
+  .preserve-3d {
+    transform-style: flat;
+  }
+}
+
+.floating-element {
+  animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(12deg);
+  }
+
+  50% {
+    transform: translateY(-10px) rotate(12deg);
+  }
+}
+
+.shine-effect {
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent);
+  transform: translateX(-100%);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+/* Enhanced 3D perspective for cards */
+.preserve-3d {
+  transform-style: preserve-3d;
+  perspective: 2000px;
+}
+
+.card-content {
+  transform: translateZ(20px);
+}
+
+.teacher-fade-enter-from {
+  opacity: 0;
+  transform: translateX(30px) scale(0.9) rotateY(45deg) translateZ(-100px);
+}
+
+.teacher-fade-leave-to {
+  opacity: 0;
+  transform: translateX(-30px) scale(0.9) rotateY(-45deg) translateZ(-100px);
+}
+
+/* Enhance background decorations */
+.animate-pulse {
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+    filter: blur(10px);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+    filter: blur(15px);
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .floating-element {
+    animation: none;
+    transform: none !important;
+  }
+
+  .shine-effect {
+    display: none;
   }
 }
 </style>
