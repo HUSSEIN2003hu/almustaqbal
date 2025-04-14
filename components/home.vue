@@ -26,19 +26,20 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 p-4 md:p-8 relative mx-auto [perspective:2000px]">
+        <div
+          class="hidden lg:grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8 lg:gap-12 p-2 relative mx-auto [perspective:2000px] max-w-7xl">
           <TransitionGroup name="teacher-fade">
             <div v-for="(teacher, index) in visibleTeachers.slice(0, 2)" :key="teacher.name + teacher.subjects[0]"
               class="bg-white rounded-2xl overflow-hidden transition-all duration-500 ease-out transform-gpu group relative preserve-3d"
               :class="[
-                'hover:-translate-y-4',
-                index === 0 ? 'rotate-y-6' : '',
-                index === 1 ? '-rotate-y-6' : ''
+                'hover:-translate-y-2 sm:hover:-translate-y-4',
+                index === 0 ? 'rotate-y-3 sm:rotate-y-6' : '',
+                index === 1 ? '-rotate-y-3 sm:-rotate-y-6' : ''
               ]" :style="{
                 transform: 'rotate3d(.5,-.866,0,15deg) rotate(1deg)',
                 boxShadow: '2em 4em 6em -2em rgba(0,0,0,.5), 1em 2em 3.5em -2.5em rgba(0,0,0,.5)',
                 borderRadius: '.5em',
-                transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
+                transition: 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)'
               }" @mousemove="handleMouseMove($event, index)" @mouseleave="handleMouseLeave(index)">
               <div class="absolute inset-0 bg-gradient-to-r" :style="{
                 background: `linear-gradient(105deg, 
@@ -247,14 +248,15 @@ onUnmounted(() => {
 .preserve-3d {
   transform-style: preserve-3d;
   perspective: 2000px;
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .preserve-3d:hover {
   transform:
-    rotate3d(0, 0, 0, 0deg) rotate(0deg) translateY(-20px) scale(1.05);
+    rotate3d(0, 0, 0, 0deg) rotate(0deg) translateY(-30px) scale(1.08);
   box-shadow:
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 15px rgba(0, 0, 0, 0.1);
+    0 35px 60px -15px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(0, 0, 0, 0.1);
 }
 
 .rotate-y-12 {
@@ -276,17 +278,21 @@ onUnmounted(() => {
 .teacher-fade-move,
 .teacher-fade-enter-active,
 .teacher-fade-leave-active {
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .teacher-fade-enter-from {
   opacity: 0;
-  transform: translateX(50px) scale(0.9) rotateY(45deg) translateZ(-100px);
+  transform:
+    translateX(100px) scale(0.8) rotateY(60deg) translateZ(-200px);
+  filter: blur(10px);
 }
 
 .teacher-fade-leave-to {
   opacity: 0;
-  transform: translateX(-50px) scale(0.9) rotateY(-45deg) translateZ(-100px);
+  transform:
+    translateX(-100px) scale(0.8) rotateY(-60deg) translateZ(-200px);
+  filter: blur(10px);
 }
 
 .teacher-fade-leave-active {
@@ -339,7 +345,8 @@ onUnmounted(() => {
 
   .teacher-fade-enter-from,
   .teacher-fade-leave-to {
-    transform: none !important;
+    transform: translateY(50px) scale(0.9) !important;
+    filter: blur(5px);
   }
 
   .grid {
@@ -347,7 +354,7 @@ onUnmounted(() => {
   }
 
   .preserve-3d:hover {
-    transform: translateY(-10px) scale(1.02) !important;
+    transform: translateY(-15px) scale(1.05) !important;
   }
 }
 
@@ -360,21 +367,168 @@ onUnmounted(() => {
   .p-4 {
     padding: 1rem;
   }
+
+  .preserve-3d {
+    transform: none !important;
+    perspective: none;
+  }
+
+  .preserve-3d:hover {
+    transform: translateY(-10px) scale(1.02) !important;
+  }
+
+  .card-content {
+    transform: none !important;
+  }
+
+  .floating-element {
+    animation: none;
+    transform: none !important;
+  }
+
+  .teacher-fade-enter-from,
+  .teacher-fade-leave-to {
+    transform: translateY(20px) scale(0.95) !important;
+    filter: blur(3px);
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .preserve-3d {
+    perspective: 1500px;
+  }
+
+  .preserve-3d:hover {
+    transform: translateY(-15px) scale(1.05) !important;
+  }
+
+  .card-content {
+    transform: translateZ(20px);
+  }
+
+  .preserve-3d:hover .card-content {
+    transform: translateZ(40px);
+  }
+
+  .teacher-fade-enter-from,
+  .teacher-fade-leave-to {
+    transform: translateX(30px) scale(0.9) rotateY(30deg) translateZ(-100px);
+  }
+}
+
+@media (min-width: 1025px) {
+  .preserve-3d {
+    perspective: 2000px;
+  }
+
+  .preserve-3d:hover {
+    transform:
+      rotate3d(0, 0, 0, 0deg) rotate(0deg) translateY(-30px) scale(1.08);
+  }
+
+  .card-content {
+    transform: translateZ(30px);
+  }
+
+  .preserve-3d:hover .card-content {
+    transform: translateZ(80px);
+  }
+
+  .teacher-fade-enter-from,
+  .teacher-fade-leave-to {
+    transform: translateX(100px) scale(0.8) rotateY(60deg) translateZ(-200px);
+  }
+}
+
+/* Responsive image sizes */
+img {
+  height: 200px;
+}
+
+@media (min-width: 641px) {
+  img {
+    height: 250px;
+  }
+}
+
+@media (min-width: 1025px) {
+  img {
+    height: 280px;
+  }
+}
+
+/* Responsive text sizes */
+h3 {
+  font-size: 1rem;
+}
+
+@media (min-width: 641px) {
+  h3 {
+    font-size: 1.125rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  h3 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Responsive padding and margins */
+.p-5 {
+  padding: 1rem;
+}
+
+@media (min-width: 641px) {
+  .p-5 {
+    padding: 1.25rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  .p-5 {
+    padding: 1.5rem;
+  }
+}
+
+/* Responsive floating element */
+.floating-element {
+  width: 3rem;
+  height: 3rem;
+}
+
+@media (min-width: 641px) {
+  .floating-element {
+    width: 4rem;
+    height: 4rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  .floating-element {
+    width: 5rem;
+    height: 5rem;
+  }
 }
 
 .floating-element {
-  animation: float 3s ease-in-out infinite;
+  animation: float 4s ease-in-out infinite;
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes float {
 
   0%,
   100% {
-    transform: translateY(0);
+    transform: translateY(0) rotate(0deg);
   }
 
-  50% {
-    transform: translateY(-10px);
+  25% {
+    transform: translateY(-8px) rotate(2deg);
+  }
+
+  75% {
+    transform: translateY(8px) rotate(-2deg);
   }
 }
 
@@ -393,48 +547,51 @@ onUnmounted(() => {
   }
 }
 
-.preserve-3d {
-  transform-style: preserve-3d;
-  perspective: 2000px;
-}
-
 .card-content {
-  transform: translateZ(20px);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(30px);
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .preserve-3d:hover .card-content {
-  transform: translateZ(50px);
+  transform: translateZ(80px);
 }
 
 .preserve-3d:hover img {
-  transform: scale(1.1);
-  filter: brightness(1.1);
+  transform: scale(1.15);
+  filter: brightness(1.15) contrast(1.1);
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .preserve-3d:hover .floating-element {
-  transform: translateY(-15px) rotate(15deg) scale(1.1);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-20px) rotate(20deg) scale(1.2);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .preserve-3d:hover h3 {
-  transform: translateX(10px);
+  transform: translateX(15px);
   color: var(--teacher-color);
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .preserve-3d:hover .subject-badge {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.teacher-fade-enter-from {
-  opacity: 0;
-  transform: translateX(50px) scale(0.9) rotateY(45deg) translateZ(-100px);
+/* Enhanced hover effects */
+.preserve-3d::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.teacher-fade-leave-to {
-  opacity: 0;
-  transform: translateX(-50px) scale(0.9) rotateY(-45deg) translateZ(-100px);
+.preserve-3d:hover::before {
+  transform: translateX(100%);
 }
 
 /* Enhance background decorations */
