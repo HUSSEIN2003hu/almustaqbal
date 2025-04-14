@@ -1,39 +1,45 @@
 <template>
   <section style="color: azure;">
-    <div class="w-full h-fit pb-52 bg-primary rounded-br-[600px]">
-      <div class="container mx-auto flex justify-between w-full pt-40 px-4">
-        <div>
-          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-1" style="line-height: unset !important">
+    <div class="w-full h-fit pb-20 md:pb-52 bg-primary rounded-br-[300px] md:rounded-br-[600px]">
+      <div class="container mx-auto flex flex-col md:flex-row justify-between w-full pt-20 md:pt-40 px-4">
+        <div class="mb-10 md:mb-0">
+          <h1 class="text-2xl sm:text-3xl lg:text-5xl font-bold mb-1"
+            style="line-height: unset !important; width: 595px;">
             أصبح التعلم عبر الإنترنت
           </h1>
 
-          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3" style="line-height: unset !important">
+          <h1 class="text-2xl sm:text-3xl lg:text-5xl font-bold mb-3" style="line-height: unset !important">
             <span class="text-secondary"> أسهل </span>
             بكثير الآن
           </h1>
-          <ul class="space-y-4 list-disc pr-6">
-            <li class="text-lg">تعلم من أفضل الأساتذة في العراق </li>
-            <li class="text-lg">شرح مبسط وشامل لكل تفاصيل المادة</li>
-            <li class="text-lg">متابعة مستمرة ودعم متكامل بإشراف الخبراء</li>
+          <ul class="space-y-3 md:space-y-4 list-disc pr-6">
+            <li class="text-base md:text-lg">تعلم من أفضل الأساتذة في العراق </li>
+            <li class="text-base md:text-lg">شرح مبسط وشامل لكل تفاصيل المادة</li>
+            <li class="text-base md:text-lg">متابعة مستمرة ودعم متكامل بإشراف الخبراء</li>
           </ul>
-          <div class="mt-4 flex gap-4">
-            <NuxtLink to="/my-courses" class="btn btn-secondary rounded-[20px] mt-4 shadow-md"
+          <div class="mt-4 flex flex-col sm:flex-row gap-4">
+            <NuxtLink to="/my-courses" class="btn btn-secondary rounded-[20px] mt-4 shadow-md text-center"
               style="color: #000; font-weight: normal;"> الدورات التعليمية</NuxtLink>
-            <NuxtLink to="/auth" class="btn  rounded-[20px] mt-4 shadow-md" style="color: #000; font-weight: normal;">
+            <NuxtLink to="/auth" class="btn rounded-[20px] mt-4 shadow-md text-center"
+              style="color: #000; font-weight: normal;">
               دخول إلى حسابي</NuxtLink>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 p-8 relative max-w-7xl mx-auto [perspective:2000px]">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 p-4 md:p-8 relative mx-auto [perspective:2000px]">
           <TransitionGroup name="teacher-fade">
-            <div v-for="(teacher, index) in visibleTeachers" :key="teacher.name + teacher.subjects[0]"
-              class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform-gpu group relative preserve-3d"
+            <div v-for="(teacher, index) in visibleTeachers.slice(0, 2)" :key="teacher.name + teacher.subjects[0]"
+              class="bg-white rounded-2xl overflow-hidden transition-all duration-500 ease-out transform-gpu group relative preserve-3d"
               :class="[
-                'hover:-translate-y-2 hover:rotate-y-12 hover:rotate-x-12',
+                'hover:-translate-y-4',
                 index === 0 ? 'rotate-y-6' : '',
-                index === 1 ? 'translate-y-8 -rotate-y-6' : '',
-                index === 2 ? '-translate-y-8 rotate-y-6' : ''
-              ]" @mousemove="handleMouseMove($event, index)" @mouseleave="handleMouseLeave(index)">
+                index === 1 ? '-rotate-y-6' : ''
+              ]" :style="{
+                transform: 'rotate3d(.5,-.866,0,15deg) rotate(1deg)',
+                boxShadow: '2em 4em 6em -2em rgba(0,0,0,.5), 1em 2em 3.5em -2.5em rgba(0,0,0,.5)',
+                borderRadius: '.5em',
+                transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
+              }" @mousemove="handleMouseMove($event, index)" @mouseleave="handleMouseLeave(index)">
               <div class="absolute inset-0 bg-gradient-to-r" :style="{
                 background: `linear-gradient(105deg, 
                     ${teacher.color}15 0%, 
@@ -102,8 +108,11 @@
           </TransitionGroup>
 
           <!-- Enhanced background decorations -->
-          <div class="absolute -top-12 -right-12 w-48 h-48 bg-[#5B6EF5] rounded-full -z-10 blur-md animate-pulse"></div>
-          <div class="absolute -bottom-8 -left-8 w-36 h-36 bg-[#FFB74D] rounded-full -z-10 blur-md animate-pulse-slow">
+          <div
+            class="absolute -top-12 -right-12 w-32 h-32 md:w-48 md:h-48 bg-[#5B6EF5] rounded-full -z-10 blur-md animate-pulse">
+          </div>
+          <div
+            class="absolute -bottom-8 -left-8 w-24 h-24 md:w-36 md:h-36 bg-[#FFB74D] rounded-full -z-10 blur-md animate-pulse-slow">
           </div>
         </div>
       </div>
@@ -165,7 +174,7 @@ let currentIndex = 0
 let intervalId = null
 
 const initializeCards = () => {
-  cards.value = Array(3).fill().map(() => ({
+  cards.value = Array(2).fill().map(() => ({
     transform: '',
     hover: false
   }))
@@ -203,8 +212,7 @@ const handleMouseLeave = (index) => {
 const rotateTeachers = () => {
   visibleTeachers.value = [
     teachers.value[currentIndex % teachers.value.length],
-    teachers.value[(currentIndex + 1) % teachers.value.length],
-    teachers.value[(currentIndex + 2) % teachers.value.length]
+    teachers.value[(currentIndex + 1) % teachers.value.length]
   ]
   currentIndex = (currentIndex + 1) % teachers.value.length
 }
@@ -241,6 +249,14 @@ onUnmounted(() => {
   perspective: 2000px;
 }
 
+.preserve-3d:hover {
+  transform:
+    rotate3d(0, 0, 0, 0deg) rotate(0deg) translateY(-20px) scale(1.05);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 15px rgba(0, 0, 0, 0.1);
+}
+
 .rotate-y-12 {
   transform: rotateY(12deg);
 }
@@ -265,12 +281,12 @@ onUnmounted(() => {
 
 .teacher-fade-enter-from {
   opacity: 0;
-  transform: translateX(30px) scale(0.9) rotateY(45deg) translateZ(-100px);
+  transform: translateX(50px) scale(0.9) rotateY(45deg) translateZ(-100px);
 }
 
 .teacher-fade-leave-to {
   opacity: 0;
-  transform: translateX(-30px) scale(0.9) rotateY(-45deg) translateZ(-100px);
+  transform: translateX(-50px) scale(0.9) rotateY(-45deg) translateZ(-100px);
 }
 
 .teacher-fade-leave-active {
@@ -307,21 +323,58 @@ onUnmounted(() => {
   .preserve-3d {
     transform-style: flat;
   }
+
+  .floating-element {
+    animation: none;
+    transform: none !important;
+  }
+
+  .shine-effect {
+    display: none;
+  }
+
+  .card-content {
+    transform: none !important;
+  }
+
+  .teacher-fade-enter-from,
+  .teacher-fade-leave-to {
+    transform: none !important;
+  }
+
+  .grid {
+    gap: 1.5rem;
+  }
+
+  .preserve-3d:hover {
+    transform: translateY(-10px) scale(1.02) !important;
+  }
+}
+
+/* Small screens */
+@media (max-width: 640px) {
+  .grid {
+    gap: 1rem;
+  }
+
+  .p-4 {
+    padding: 1rem;
+  }
 }
 
 .floating-element {
-  animation: floating 3s ease-in-out infinite;
+  animation: float 3s ease-in-out infinite;
 }
 
-@keyframes floating {
+@keyframes float {
 
   0%,
   100% {
-    transform: translateY(0) rotate(12deg);
+    transform: translateY(0);
   }
 
   50% {
-    transform: translateY(-10px) rotate(12deg);
+    transform: translateY(-10px);
   }
 }
 
@@ -340,7 +393,6 @@ onUnmounted(() => {
   }
 }
 
-/* Enhanced 3D perspective for cards */
 .preserve-3d {
   transform-style: preserve-3d;
   perspective: 2000px;
@@ -348,16 +400,41 @@ onUnmounted(() => {
 
 .card-content {
   transform: translateZ(20px);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.preserve-3d:hover .card-content {
+  transform: translateZ(50px);
+}
+
+.preserve-3d:hover img {
+  transform: scale(1.1);
+  filter: brightness(1.1);
+}
+
+.preserve-3d:hover .floating-element {
+  transform: translateY(-15px) rotate(15deg) scale(1.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.preserve-3d:hover h3 {
+  transform: translateX(10px);
+  color: var(--teacher-color);
+}
+
+.preserve-3d:hover .subject-badge {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .teacher-fade-enter-from {
   opacity: 0;
-  transform: translateX(30px) scale(0.9) rotateY(45deg) translateZ(-100px);
+  transform: translateX(50px) scale(0.9) rotateY(45deg) translateZ(-100px);
 }
 
 .teacher-fade-leave-to {
   opacity: 0;
-  transform: translateX(-30px) scale(0.9) rotateY(-45deg) translateZ(-100px);
+  transform: translateX(-50px) scale(0.9) rotateY(-45deg) translateZ(-100px);
 }
 
 /* Enhance background decorations */
@@ -378,18 +455,6 @@ onUnmounted(() => {
     opacity: 0.7;
     transform: scale(1.1);
     filter: blur(15px);
-  }
-}
-
-/* Mobile optimizations */
-@media (max-width: 768px) {
-  .floating-element {
-    animation: none;
-    transform: none !important;
-  }
-
-  .shine-effect {
-    display: none;
   }
 }
 </style>
