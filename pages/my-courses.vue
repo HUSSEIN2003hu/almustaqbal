@@ -7,7 +7,7 @@
                     <path
                         d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
                 </svg>
-                المعلمين
+                المدرسين
             </button>
             <button @click="showChapters = !showChapters" class="btn btn-secondary">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -23,7 +23,7 @@
             <div v-if="showTeachers" class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-50">
                 <div class="bg-tertiary h-full w-full p-4 overflow-y-auto">
                     <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold text-white">جميع المعلمين</h2>
+                        <h2 class="text-xl font-bold text-white">جميع المدرسين</h2>
                         <button @click="showTeachers = false" class="btn btn-ghost text-white">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
@@ -63,11 +63,11 @@
 
             <!-- Desktop Teachers Panel -->
             <div class="hidden lg:block bg-tertiary rounded-[30px] shadow-xl p-4 pb-8 lg:w-1/4">
-                <h2 class="text-xl font-bold text-white mb-3" style="color: azure;">جميع المعلمين</h2>
+                <h2 class="text-xl font-bold text-white mb-3" style="color: azure;">جميع المدرسين</h2>
 
                 <div v-if="isLoadingCourses" class="flex justify-center items-center p-4">
                     <div class="loading loading-spinner loading-lg text-white"></div>
-                    <p class="mr-2 text-white">جاري تحميل المعلمين...</p>
+                    <p class="mr-2 text-white">جاري تحميل المدرسين...</p>
                 </div>
 
                 <div v-else class="h-[70vh] overflow-hidden">
