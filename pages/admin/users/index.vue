@@ -62,7 +62,7 @@
                             </div>
                         </div>
                         <div class="card-actions justify-end mt-4">
-                            <h1>{{ user.email }}</h1>
+                            <h1>{{ user?.email }}</h1>
                         </div>
                     </div>
                 </div>
@@ -294,6 +294,7 @@ interface User {
     createdAt: number;
     isActive: boolean;
     isAdmin?: boolean;
+    email?: string; // Added email property
 }
 
 interface Course {
