@@ -68,7 +68,7 @@ const contacts = ref([
     {
       title: "واتساب",
       icon: "fa6-brands:whatsapp",
-      text: "+964 771 234 2980",
+      text: "0777 957 2684",
       link: "https://wa.me/901123456789",
     },
     {
