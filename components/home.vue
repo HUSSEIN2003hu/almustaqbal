@@ -1,7 +1,7 @@
 <template>
   <section style="color: azure;">
     <div class="w-full h-fit pb-20 md:pb-52 bg-primary rounded-br-[300px] md:rounded-br-[600px]">
-      <div class="container mx-auto flex flex-col md:flex-row justify-between w-full pt-20 md:pt-40 px-4">
+      <div class="container mx-auto flex flex-col md:flex-row justify-between w-full pt-32 md:pt-40 px-4">
         <div class="mb-10 md:mb-0">
           <h1 class="text-2xl sm:text-3xl lg:text-5xl font-bold mb-1"
             style="line-height: unset !important; width: 595px;">
