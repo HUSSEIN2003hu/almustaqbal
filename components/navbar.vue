@@ -101,8 +101,12 @@
 
       <!-- Right Section -->
       <div class="navbar-end rounded-xl gap-4">
-        <div v-if="userStore.isLoggedIn" class="flex items-center gap-4">
-          مرحبًا, {{ userStore.username }}
+        <div v-if="userStore.isLoggedIn" class="flex items-center gap-4 ">
+          <transition name="fade">
+            <span v-if="showWelcomeMessage" class="animate-fade-in">
+              مرحبًا, {{ userStore.username.slice(0, 10) }}{{ userStore.username.length > 10 ? '...' : '' }}
+            </span>
+          </transition>
           <button @click="logout" class="btn btn-error hover:bg-red-700 text-white">
             <span class="hidden xl:block">تسجيل الخروج</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:ml-2" viewBox="0 0 24 24" fill="currentColor">
@@ -126,17 +130,57 @@
 
 <script setup>
 import { useUserStore } from '~/stores/auth';
-import { watch } from 'vue';
+import { watch, ref, onMounted } from 'vue';
 
 const userStore = useUserStore();
+const showWelcomeMessage = ref(false);
+
+onMounted(() => {
+  if (userStore.isLoggedIn) {
+    setTimeout(() => {
+      showWelcomeMessage.value = true;
+    }, 10000); // 10 seconds
+  }
+});
 
 const logout = () => {
   userStore.logout();
 };
 
 watch(() => userStore.isLoggedIn, (newVal) => {
-  // Diese Funktion wird aufgerufen, wenn sich isLoggedIn ändert.
-  // Hier kannst du zusätzliche UI-Aktualisierungen durchführen, falls nötig.
-  console.log('User status changed:', newVal);
+  if (newVal) {
+    setTimeout(() => {
+      showWelcomeMessage.value = true;
+    }, 10000);
+  } else {
+    showWelcomeMessage.value = false;
+  }
 });
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
