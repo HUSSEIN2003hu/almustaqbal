@@ -40,16 +40,32 @@
                 :pagination="{ clickable: true }"
             >
                 <SwiperSlide  class="flex justify-center" v-for="(teacher, index) in teachers" :key="index" style="padding: 20px;">
-                    <div class="card bg-white rounded-xl shadow-md p-4 min-w-[235px] h-full"  
+                    <div class="card bg-white rounded-xl shadow-md p-4 min-w-[235px] h-full ralative"  
                          style=" box-shadow: 0px 0px 8px 0 rgba(0,0,0,0.25); background-color: white;" >
                         <div class="avatar mx-auto mt-2">
                             <div class="ring-neutral-content ring-offset-base-100 w-45 rounded-full ring ring-offset-2">
                                 <img :src="teacher.image" />
                             </div>
                         </div>
-                        <h2 class="text-primary text-base mt-6 font-bold mb-1">{{ teacher.name }}</h2>
-                        <div class="shadow-md badge border-none" :style="{ backgroundColor: teacher.color }">{{ teacher.subject }}</div>
+                        <div style="position: relative; margin-top: 15px; margin-bottom: 5px;">
+                            <div class="flex flex-wrap gap-2 absolute -top-2 right-0">
+                                
+                                <span v-for="sub in teacher.subjects" :key="sub" class="px-3 py-1 rounded-full text-xs font-medium transform-gpu transition-all duration-300 
+                                hover:scale-110 hover:-translate-y-1 hover:rotate-2 relative overflow-hidden group/badge"
+                                :style="{
+                                    backgroundColor: `${teacher.color}15`,
+                                    color: teacher.color,
+                                    border: `1px solid ${teacher.color}30`,
+                                    boxShadow: `0 2px 4px ${teacher.color}10`
+                                }">
+                            <!-- Badge shine effect -->
+                            <div class="absolute inset-0 w-full h-full shine-effect"></div>
+                            {{ sub }}
+                        </span>
                     </div>
+                    <h2 class="text-primary text-base mt-6 font-bold mb-1">{{ teacher.name }}</h2>
+                  </div>                    
+                </div>
                 </SwiperSlide>
             </Swiper>
         </div>
@@ -66,67 +82,57 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 
 const teachers = ref([
-{
+  {
     name: "الاستاذ محسن اسماعيل",
-    subject: "تاريخ",
+    subjects: ["تاريخ", "جغرافية", "اقتصاد"],
     image: "/assess/img/الأستاذ محسن أسماعيل _ تاريخ _ جغرافية _ اقتصاد.jpg",
     color: "#FF6347"
   },
   {
-      name: "الاستاذ محسن اسماعيل",
-      subject: "اقتصاد",
-      image: "/assess/img/الأستاذ محسن أسماعيل _ تاريخ _ جغرافية _ اقتصاد.jpg",
-      color: "#32CD32"
-    },
-    {
-        name: "الاستاذ حسنين اللامي",
-        subject: "كيمياء",
+    name: "الاستاذ حسنين اللامي",
+    subjects: ["كيمياء"],
     image: "/assess/img/الأستاذ  حسنين اللامي _ كيمياء.jpg",
     color: "#1E90FF"
   },
   {
     name: "الاستاذ كرار خضير العامري",
-    subject: "اللغة الانكليزية",
+    subjects: ["اللغة الانكليزية"],
     image: "/assess/img/الأستاذ  كرار خضير العامري _ اللغة الانكليزية.jpg",
     color: "#8A2BE2"
-},
-{
+  },
+  {
     name: "الاستاذة فاطمة الموسوي",
-    subject: "اللغة العربية",
+    subjects: ["اللغة العربية"],
     image: "/assess/img/الأستاذة فاطمة الموسوي _ اللغة العربية .jpg",
     color: "#FF4500"
-},
-{
+  },
+  {
     name: "الاستاذ جودت نجدت",
-    subject: "رياضيات",
+    subjects: ["رياضيات"],
     image: "/assess/img/الأستاذ جودت نجدت _ رياضيات.jpg",
     color: "#DA70D6"
-},
-{
+  },
+  {
     name: "الاستاذ عامر عدنان الجبوري",
-    subject: "فيزياء",
+    subjects: ["فيزياء"],
     image: "/assess/img/الأستاذ عامرعدنان الجبوري _ فيزياء.jpg",
     color: "#00CED1"
   },
   {
-    name: "لاستاذة مريم الربيعي",
-    subject: "الإسلامية",
+    name: "الاستاذة مريم الربيعي",
+    subjects: ["الإسلامية"],
     image: "/assess/img/الأستاذة مريم الربيعي _ الاسلامية.jpg",
     color: "#0FD794"
-},
-{
-    name: "الاستاذة فرح عباس",
-    subject: "احياء",
+  }
+  ,
+  {
+    name: "الاستاذة مريم الربيعي",
+    subjects: ["احياء"],
     image: "/assess/img/الأستاذة فرح عباس _ احياء.jpg",
     color: "#FF1493"
-},
-{
-  name: "الاستاذ محسن اسماعيل",
-  subject: "جغرافيه",
-  image: "/assess/img/الأستاذ محسن أسماعيل _ تاريخ _ جغرافية _ اقتصاد.jpg",
-  color: "#FFD700"
-},
-]);</script>
+  }
+])
+</script>
 <style scoped>
 .swiper-slide {
     @apply flex justify-center items-center;

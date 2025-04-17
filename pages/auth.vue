@@ -2,7 +2,7 @@
     <div class="min-h-screen flex items-center justify-center bg-primary p-4" dir="rtl">
         <div class="w-full max-w-screen-xl bg-base-100 shadow-xl rounded-3xl overflow-hidden mt-20">
             <div class="flex flex-col lg:flex-row flex-wrap-reverse h-full">
-                <div class="lg:w-[30%] bg-secondary h-[70vh] p-8 flex flex-col justify-center items-center">
+                <div class="lg:w-[30%] bg-secondary  md:h-[70vh]  p-8 flex flex-col justify-center items-center">
                     <h2 class="text-3xl font-bold mb-6 self-start"> {{ !login ? 'مرحبا بك' : 'أهلاً بعودتك!' }}</h2>
                     <div class="w-full max-w-md">
                         <!-- Global Error Message -->
@@ -138,8 +138,8 @@
                     </div>
                 </div>
                 <div class="lg:w-7/12 p-8 flex justify-center items-center relative z-10">
-                    <img src="/assess/icon/Bg-1.svg" alt="Online Learning" class="top-0 left-0 absolute -z-10" />
-                    <img src="/assess/icon/Bg-2.svg" alt="Online Learning" class="bottom-4 right-20 absolute -z-10" />
+                    <img src="/assess/icon/Bg-1.svg" alt="Online Learning" class="top-0 left-0 absolute -z-10 md:block hidden" />
+                    <img src="/assess/icon/Bg-2.svg" alt="Online Learning" class="bottom-4 right-20 absolute -z-10 md:block hidden" />
                     <div class="absolute inset-0 bg-black bg-opacity-50"></div>
                     <div>
                         <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2"

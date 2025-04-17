@@ -168,7 +168,7 @@ const teachers = ref([
     name: "الاستاذة مريم الربيعي",
     subjects: ["احياء"],
     image: "/assess/img/الأستاذة فرح عباس _ احياء.jpg",
-    color: "#0FD794"
+    color: "#FF1493"
   }
 ])
 

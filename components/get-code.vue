@@ -1,5 +1,5 @@
 <template>
-    <section id="code" class="relative overflow-hidden">
+    <section id="code" class="relative overflow-hidden mb-24">
       <div class="w-full">
         <div class="container mx-auto w-full pt-12 md:pt-20 px-4 sm:px-6 lg:px-8">
           <div class="flex justify-center text-center">
