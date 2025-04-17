@@ -75,7 +75,7 @@
               class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200">الأساتذة</NuxtLink>
           </li>
           <li><NuxtLink to="/#code" class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200">رمز
-              التفعيل</NuxtLink></li>
+            التدريسية</NuxtLink></li>
           <!-- Admin dropdown menu -->
           <li v-if="userStore.isAdmin" class="dropdown">
             <div tabindex="0" class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
