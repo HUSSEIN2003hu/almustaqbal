@@ -22,7 +22,7 @@
             <li>
               <NuxtLink
                 class="text-xl mb-4 hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
-                to="/my-courses">الدورات التعليمية</NuxtLink>
+                to="/my-courses">الدورات التدريسية</NuxtLink>
             </li>
             <li><NuxtLink class="text-xl mb-4 hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
                 to="/#teachers">الأساتذة</NuxtLink></li>

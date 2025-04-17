@@ -19,7 +19,7 @@
           </ul>
           <div class="mt-4 flex flex-col sm:flex-row gap-4">
             <NuxtLink to="/my-courses" class="btn btn-secondary rounded-[20px] mt-4 shadow-md text-center"
-              style="color: #000; font-weight: normal;"> الدورات التعليمية</NuxtLink>
+              style="color: #000; font-weight: normal;"> الدورات التدريسية</NuxtLink>
             <NuxtLink to="/auth" class="btn rounded-[20px] mt-4 shadow-md text-center"
               style="color: #000; font-weight: normal;">
               دخول إلى حسابي</NuxtLink>
