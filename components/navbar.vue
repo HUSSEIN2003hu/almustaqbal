@@ -42,7 +42,7 @@
                 <li>
                   <NuxtLink
                     class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200 inline-block"
-                    to="/admin/users">إدارة المستخدمين</NuxtLink>
+                    to="/admin/users">إدارة طالب</NuxtLink>
                 </li>
                 <li>
                   <NuxtLink
@@ -88,7 +88,7 @@
               </li>
               <li>
                 <NuxtLink to="/admin/users" class="hover:bg-red hover:text-white block px-4 py-2 rounded">إدارة
-                  المستخدمين</NuxtLink>
+                  طالب</NuxtLink>
               </li>
               <li>
                 <NuxtLink to="/admin/courses" class="hover:bg-red hover:text-white block px-4 py-2 rounded">إدارة

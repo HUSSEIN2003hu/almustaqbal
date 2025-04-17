@@ -52,7 +52,7 @@ export default defineEventHandler(async (event) => {
       maxAge: 7 * 24 * 60 * 60 // 7 أيام بالثواني
     });
 
-    // 6. جلب بيانات المستخدم من Firestore
+    // 6. جلب بيانات الطالبمن Firestore
     console.log("Fetching user data for UID:", uid);
     const userSnapshot = await adminDb
       .collection('users')
@@ -62,7 +62,7 @@ export default defineEventHandler(async (event) => {
     if (userSnapshot.empty) {
       throw createError({
         statusCode: 404,
-        message: 'المستخدم غير موجود'
+        message: 'الطالبغير موجود'
       });
     }
 

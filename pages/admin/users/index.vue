@@ -4,7 +4,7 @@
         <div class="container mx-auto">
             <!-- Header -->
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-bold">إدارة المستخدمين</h1>
+                <h1 class="text-2xl font-bold">إدارة طالب</h1>
                 <button class="btn btn-primary" @click="showNewUserModal = true">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20"
                         fill="currentColor">
@@ -12,7 +12,7 @@
                             d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
                             clip-rule="evenodd" />
                     </svg>
-                    إضافة مستخدم جديد
+                    إضافة طالب جديد
                 </button>
             </div>
 
@@ -20,7 +20,7 @@
             <div class="mb-6">
                 <div class="form-control f;e">
                     <div class="input-group flex">
-                        <input v-model="searchQuery" type="text" placeholder="البحث عن المستخدمين..."
+                        <input v-model="searchQuery" type="text" placeholder="البحث عن طالب..."
                             class="input input-bordered w-full" />
     
                     </div>
@@ -50,7 +50,7 @@
                             </div>
                         </div>
                         <div class="flex gap-2 mb-2">
-                            <div class="badge badge-primary">رمز التفعيل: {{ user.code }}</div>
+                            <div class="badge badge-primary">{{ user.code }}</div>
                             <div v-if="user.isAdmin" class="badge badge-secondary">مسؤول</div>
                         </div>
                         <div class="text-sm">
@@ -61,6 +61,9 @@
                                 </span>
                             </div>
                         </div>
+                        <div class="card-actions justify-end mt-4">
+                            <h1>{{ user.email }}</h1>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -69,7 +72,7 @@
             <dialog class="modal" :class="{ 'modal-open': showNewUserModal }">
                 <div class="p-6 w-11/12 max-w-2xl bg-base-100 rounded-lg shadow-2xl">
                     <div class="flex justify-between items-center border-b pb-4 mb-6">
-                        <h3 class="font-bold text-2xl text-primary">إنشاء مستخدم جديد</h3>
+                        <h3 class="font-bold text-2xl text-primary">إنشاء طالبجديد</h3>
                         <button class="btn btn-sm btn-circle btn-ghost hover:bg-base-200"
                             @click="showNewUserModal = false">✕</button>
                     </div>
@@ -99,7 +102,9 @@
                                     </svg>
                                 </div>
                                 <ul tabindex="0"
-                                    class="dropdown-content z-[1] menu p-2 shadow-lg bg-base-100 rounded-box w-full max-h-[300px] overflow-y-auto border border-base-300 mt-2 absolute top-full left-0">
+                                    class="dropdown-content z-[1] menu p-2 shadow-lg bg-base-100 rounded-box w-full max-h-[300px] overflow-y-auto border border-base-300 mt-2 absolute top-full left-0" style="
+    flex-wrap: nowrap;
+">
                                     <li v-for="course in availableCourses" :key="course.id">
                                         <label class="cursor-pointer hover:bg-base-200 p-3 flex rounded-lg w-full">
                                             <div class="flex items-center gap-2 w-full">
@@ -134,7 +139,7 @@
             <dialog class="modal" :class="{ 'modal-open': showGeneratedCodeModal }">
                 <div class="modal-box w-11/12 max-w-md bg-base-100 rounded-lg shadow-2xl">
                     <div class="flex justify-between items-center border-b pb-4 mb-6">
-                        <h3 class="font-bold text-2xl text-success">تم إنشاء المستخدم بنجاح</h3>
+                        <h3 class="font-bold text-2xl text-success">تم إنشاء الطالببنجاح</h3>
                         <button class="btn btn-sm btn-circle btn-ghost hover:bg-base-200"
                             @click="showGeneratedCodeModal = false">✕</button>
                     </div>
@@ -196,7 +201,9 @@
                                     </svg>
                                 </div>
                                 <ul tabindex="0"
-                                    class="dropdown-content z-[1] menu p-2 shadow-lg bg-base-100 rounded-box w-full max-h-[300px] overflow-y-auto border border-base-300 mt-2 absolute top-full left-0">
+                                    class="dropdown-content z-[1] menu p-2 shadow-lg bg-base-100 rounded-box w-full max-h-[300px] overflow-y-auto border border-base-300 mt-2 absolute top-full left-0" style="
+    flex-wrap: nowrap;
+">
                                     <li v-for="course in availableCourses" :key="course.id">
                                         <label class="cursor-pointer hover:bg-base-200 p-3 flex rounded-lg w-full">
                                             <div class="flex items-center gap-2 w-full">
@@ -221,7 +228,7 @@
                                 <input type="checkbox" v-model="editingUser.isAdmin" class="toggle toggle-primary" />
                             </label>
                             <p class="text-sm text-warning mt-1">
-                                تمنح هذه الصلاحية للمستخدم القدرة على الوصول إلى لوحة التحكم وإدارة المحتوى.
+                                تمنح هذه الصلاحية للطالبالقدرة على الوصول إلى لوحة التحكم وإدارة المحتوى.
                             </p>
                         </div>
 
@@ -247,7 +254,7 @@
                             @click="showDeleteUserModal = false">✕</button>
                     </div>
                     <div class="space-y-4">
-                        <p class="text-lg">هل أنت متأكد من حذف المستخدم "<span class="font-semibold text-primary">{{
+                        <p class="text-lg">هل أنت متأكد من حذف الطالب"<span class="font-semibold text-primary">{{
                             deletingUser?.username }}</span>"؟</p>
                         <p class="text-sm text-error">لا يمكن التراجع عن هذا الإجراء.</p>
                     </div>
@@ -336,13 +343,13 @@ const userStore = useUserStore()
 
 const showToast = (message: string, type = 'success') => {
     const arabicMessages: Record<string, string> = {
-        'User created successfully': 'تم إنشاء المستخدم بنجاح',
-        'User updated successfully': 'تم تحديث المستخدم بنجاح',
-        'User deleted successfully': 'تم حذف المستخدم بنجاح',
+        'User created successfully': 'تم إنشاء الطالببنجاح',
+        'User updated successfully': 'تم تحديث الطالببنجاح',
+        'User deleted successfully': 'تم حذف الطالببنجاح',
         'Failed to create user': 'فشل في إنشاء المستخدم',
         'Failed to update user': 'فشل في تحديث المستخدم',
         'Failed to delete user': 'فشل في حذف المستخدم',
-        'Failed to fetch users': 'فشل في جلب المستخدمين',
+        'Failed to fetch users': 'فشل في جلب طالب',
         'Failed to fetch courses': 'فشل في جلب الدورات',
         'Invalid password': 'كلمة المرور غير صحيحة',
         'Network error': 'خطأ في الاتصال بالخادم'

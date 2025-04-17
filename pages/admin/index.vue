@@ -15,9 +15,9 @@
                                 d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
                     </div>
-                    <div class="stat-title">المستخدمين</div>
+                    <div class="stat-title">طالب</div>
                     <div class="stat-value text-primary">{{ stats.totalUsers }}</div>
-                    <div class="stat-desc">{{ stats.activeUsers }} مستخدم نشط</div>
+                    <div class="stat-desc">{{ stats.activeUsers }} طالبنشط</div>
                 </div>
                 <!-- Courses Card -->
                 <div class="stat bg-base-200 shadow rounded-lg">
@@ -105,7 +105,7 @@
                 <div class="card bg-base-200 shadow-lg">
                     <div class="card-body">
                         <div class="flex justify-between items-center mb-4">
-                            <h2 class="card-title">آخر المستخدمين</h2>
+                            <h2 class="card-title">آخر طالب</h2>
                             <NuxtLink to="/admin/users" class="btn btn-primary btn-sm">عرض الكل</NuxtLink>
                         </div>
                         <div class="overflow-x-auto">
@@ -218,7 +218,7 @@
                             <path
                                 d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
                         </svg>
-                        إدارة المستخدمين
+                        إدارة طالب
                     </NuxtLink>
                     <NuxtLink to="/admin/courses" class="btn btn-secondary">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
@@ -251,7 +251,7 @@
                         </div>
                         <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-200 rounded-box w-52">
                             <li><a @click="showSystemSettings">إعدادات النظام</a></li>
-                            <li><a @click="showNotifications">إشعارات المستخدمين</a></li>
+                            <li><a @click="showNotifications">إشعارات طالب</a></li>
                             <li><a @click="showBackupOptions">النسخ الاحتياطي</a></li>
                             <li><a @click="showLogs">سجلات النظام</a></li>
                         </ul>
