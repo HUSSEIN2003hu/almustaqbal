@@ -219,11 +219,6 @@ const handleMouseLeave = (index) => {
   cards.value[index].hover = false
 }
 
-const updateWindowWidth = () => {
-  windowWidth.value = window.innerWidth
-  rotateTeachers()
-}
-
 const getVisibleTeachersCount = () => {
   if (windowWidth.value >= 1300) return 2
   if (windowWidth.value <= 770) return 2
@@ -254,16 +249,19 @@ const getSubjectEmoji = (subject) => {
   return emojiMap[subject] || '📚'
 }
 
+// Reduzierte Interval-Zeit für Mobile
+const getRotationInterval = () => {
+  return windowWidth.value <= 768 ? 5000 : 4000
+}
+
 onMounted(() => {
   initializeCards()
   rotateTeachers()
-  window.addEventListener('resize', updateWindowWidth)
-  intervalId = setInterval(rotateTeachers, 4000)
+  intervalId = setInterval(rotateTeachers, getRotationInterval())
 })
 
 onUnmounted(() => {
   if (intervalId) clearInterval(intervalId)
-  window.removeEventListener('resize', updateWindowWidth)
 })
 </script>
 

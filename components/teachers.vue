@@ -17,9 +17,9 @@
         </div>
 
         <!-- Hintergrundbilder -->
-        <img src="/assess/icon/Bg-1.svg" alt="Online Learning" class="top-0 left-0 absolute z-0 md:block hidden" />
+        <img src="/assess/icon/Bg-1.svg" alt="Online Learning" class="top-0 left-0 absolute z-0 lg:block hidden" />
         <img src="/assess/icon/Bg-2.svg" alt="Online Learning"
-            class="right-20 absolute z-0 rotate-90 md:block hidden" />
+            class="right-20 absolute z-0 rotate-90 lg:block hidden" />
 
         <!-- Swiper Container -->
         <div class="bg-secondary">
