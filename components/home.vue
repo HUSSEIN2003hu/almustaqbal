@@ -109,10 +109,10 @@
 
           <!-- Enhanced background decorations -->
           <div
-            class="absolute -top-12 -right-12 w-32 h-32 md:w-48 md:h-48 bg-[#5B6EF5] rounded-full -z-10 blur-md animate-pulse">
+            class="absolute -top-12 -right-12 w-32 h-32 md:w-48 md:h-48 bg-[#5B6EF5] rounded-full -z-10 blur-md animate-pulse hidden md:block">
           </div>
           <div
-            class="absolute -bottom-8 -left-8 w-24 h-24 md:w-36 md:h-36 bg-[#FFB74D] rounded-full -z-10 blur-md animate-pulse-slow">
+            class="absolute -bottom-8 -left-8 w-24 h-24 md:w-36 md:h-36 bg-[#FFB74D] rounded-full -z-10 blur-md animate-pulse-slow hidden md:block">
           </div>
         </div>
       </div>
