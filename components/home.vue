@@ -1,10 +1,11 @@
 <template>
   <section style="color: azure;">
     <div class="w-full h-fit pb-20 md:pb-52 bg-primary rounded-br-[300px] md:rounded-br-[600px]">
-      <div class="container mx-auto flex flex-col md:flex-row justify-between w-full pt-32 md:pt-40 px-4">
+      <div
+        class="container mx-auto flex flex-col flex-wrap md:flex-row justify-center items-center md:justify-between  w-full pt-32 md:pt-40 px-4">
         <div class="mb-10 md:mb-0">
           <h1 class="text-2xl sm:text-3xl lg:text-5xl font-bold mb-1"
-            style="line-height: unset !important; width: 595px;">
+            style="line-height: unset !important; max-width: 595px; min-width: 300px;">
             أصبح التعلم عبر الإنترنت
           </h1>
 
@@ -17,17 +18,17 @@
             <li class="text-base md:text-lg">شرح مبسط وشامل لكل تفاصيل المادة</li>
             <li class="text-base md:text-lg">متابعة مستمرة ودعم متكامل بإشراف الخبراء</li>
           </ul>
-          <div class="mt-4 flex flex-col sm:flex-row gap-4">
+          <div class="mt-4 flex flex-row gap-4">
             <NuxtLink to="/my-courses" class="btn btn-secondary rounded-[20px] mt-4 shadow-md text-center"
               style="color: #000; font-weight: normal;"> الدورات التدريسية</NuxtLink>
-            <NuxtLink to="/auth" class="btn rounded-[20px] mt-4 shadow-md text-center"
+
+            <NuxtLink v-if="!userStore?.user" to="/auth" class="btn rounded-[20px] mt-4 shadow-md text-center"
               style="color: #000; font-weight: normal;">
               دخول إلى حسابي</NuxtLink>
           </div>
         </div>
 
-        <div
-          class="hidden lg:grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8 lg:gap-12 p-2 relative mx-auto [perspective:2000px] max-w-7xl">
+        <div class="flex gap-4 sm:gap-6 md:gap-8 lg:gap-12 p-2 relative mx-auto [perspective:2000px] max-w-7xl">
           <TransitionGroup name="teacher-fade">
             <div v-for="(teacher, index) in visibleTeachers.slice(0, 2)" :key="teacher.name + teacher.subjects[0]"
               class="bg-white rounded-2xl overflow-hidden transition-all duration-500 ease-out transform-gpu group relative"
@@ -35,7 +36,9 @@
                 transform: 'rotate3d(.5,-.866,0,15deg) rotate(1deg)',
                 boxShadow: '2em 4em 6em -2em rgba(0,0,0,.5), 1em 2em 3.5em -2.5em rgba(0,0,0,.5)',
                 borderRadius: '.5em',
-                transition: 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                transition: 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                width: 'fit-content',
+                height: 'fit-content',
               }">
               <div class="absolute inset-0 bg-gradient-to-r" :style="{
                 background: `linear-gradient(105deg, 
@@ -172,10 +175,13 @@ const teachers = ref([
   }
 ])
 
+
+const userStore = useUserStore()
 const cards = ref([])
 const visibleTeachers = ref([])
 let currentIndex = 0
 let intervalId = null
+const windowWidth = ref(window.innerWidth)
 
 const initializeCards = () => {
   cards.value = Array(2).fill().map(() => ({
@@ -213,11 +219,22 @@ const handleMouseLeave = (index) => {
   cards.value[index].hover = false
 }
 
+const updateWindowWidth = () => {
+  windowWidth.value = window.innerWidth
+  rotateTeachers()
+}
+
+const getVisibleTeachersCount = () => {
+  if (windowWidth.value >= 1300) return 2
+  if (windowWidth.value <= 770) return 2
+  return 1
+}
+
 const rotateTeachers = () => {
-  visibleTeachers.value = [
-    teachers.value[currentIndex % teachers.value.length],
-    teachers.value[(currentIndex + 1) % teachers.value.length]
-  ]
+  const count = getVisibleTeachersCount()
+  visibleTeachers.value = Array(count).fill().map((_, i) =>
+    teachers.value[(currentIndex + i) % teachers.value.length]
+  )
   currentIndex = (currentIndex + 1) % teachers.value.length
 }
 
@@ -232,7 +249,7 @@ const getSubjectEmoji = (subject) => {
     'رياضيات': '➗',
     'فيزياء': '⚡',
     'الإسلامية': '☪️',
-   'احياء': '🌱',
+    'احياء': '🌱',
   }
   return emojiMap[subject] || '📚'
 }
@@ -240,11 +257,13 @@ const getSubjectEmoji = (subject) => {
 onMounted(() => {
   initializeCards()
   rotateTeachers()
+  window.addEventListener('resize', updateWindowWidth)
   intervalId = setInterval(rotateTeachers, 4000)
 })
 
 onUnmounted(() => {
   if (intervalId) clearInterval(intervalId)
+  window.removeEventListener('resize', updateWindowWidth)
 })
 </script>
 

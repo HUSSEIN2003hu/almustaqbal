@@ -24,10 +24,16 @@
                 class="text-xl mb-4 hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
                 to="/my-courses">الدورات التدريسية</NuxtLink>
             </li>
-            <li><NuxtLink class="text-xl mb-4 hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
-                to="/#teachers">الأساتذة</NuxtLink></li>
-            <li><NuxtLink class="text-xl mb-4 hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
-                to="/#code">رمز التفعيل</NuxtLink></li>
+            <li>
+              <NuxtLink
+                class="text-xl mb-4 hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
+                to="/#teachers">الأساتذة</NuxtLink>
+            </li>
+            <li>
+              <NuxtLink
+                class="text-xl mb-4 hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
+                to="/#code">رمز التفعيل</NuxtLink>
+            </li>
             <!-- Admin dropdown for mobile -->
             <li v-if="userStore.isAdmin" class="menu-submenu text-xl mb-4 mt-4">
               <span
@@ -71,11 +77,15 @@
               class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200">الدورات
               التعليمية </NuxtLink>
           </li>
-          <li><NuxtLink to="/#teachers"
+          <li>
+            <NuxtLink to="/#teachers"
               class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200">الأساتذة</NuxtLink>
           </li>
-          <li><NuxtLink to="/#code" class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200">رمز
-            التدريسية</NuxtLink></li>
+          <li>
+            <NuxtLink to="/#code"
+              class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200">رمز
+              التدريسية</NuxtLink>
+          </li>
           <!-- Admin dropdown menu -->
           <li v-if="userStore.isAdmin" class="dropdown">
             <div tabindex="0" class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
@@ -178,6 +188,7 @@ watch(() => userStore.isLoggedIn, (newVal) => {
     opacity: 0;
     transform: translateY(-5px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
