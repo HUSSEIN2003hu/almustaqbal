@@ -4,7 +4,7 @@
         <div class="container mx-auto">
             <!-- Header -->
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-bold">إدارة طالب</h1>
+                <h1 class="text-2xl font-bold">إدارة طلاب </h1>
                 <button class="btn btn-primary" @click="showNewUserModal = true">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20"
                         fill="currentColor">
