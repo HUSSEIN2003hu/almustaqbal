@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
     // 2. المصادقة باستخدام Firebase Identity Toolkit API
     const FIREBASE_API_KEY = useRuntimeConfig().apiKey;
 
-    const { idToken, localId: uid } = await $fetch(
+    const response = await $fetch(
       `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${FIREBASE_API_KEY}`,
       {
         method: 'POST',
@@ -36,15 +36,14 @@ export default defineEventHandler(async (event) => {
       }
     );
 
-    // 3. إبطال التوكنات القديمة (اختياري لكن موصى به)
-    await adminAuth.revokeRefreshTokens(uid);
+    const { idToken, refreshToken, localId: uid } = response;
 
-    // 4. إنشاء session cookie صالح لمدة 7 أيام
+    // 3. إنشاء session cookie صالح لمدة 7 أيام
     const sessionCookie = await adminAuth.createSessionCookie(idToken, {
       expiresIn: 7 * 24 * 60 * 60 * 1000 // 7 أيام بالملي ثانية
     });
-
-    // 5. تخزين الكوكي الآمن
+    
+    // 4. تخزين الكوكي الآمن
     setCookie(event, '__session', sessionCookie, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -52,8 +51,7 @@ export default defineEventHandler(async (event) => {
       maxAge: 7 * 24 * 60 * 60 // 7 أيام بالثواني
     });
 
-    // 6. جلب بيانات الطالبمن Firestore
-    console.log("Fetching user data for UID:", uid);
+    // 5. جلب بيانات الطالبمن Firestore
     const userSnapshot = await adminDb
       .collection('users')
       .where('uid', '==', uid)
@@ -62,7 +60,7 @@ export default defineEventHandler(async (event) => {
     if (userSnapshot.empty) {
       throw createError({
         statusCode: 404,
-        message: 'الطالبغير موجود'
+        message: 'الطالب غير موجود'
       });
     }
 
@@ -102,6 +100,10 @@ export default defineEventHandler(async (event) => {
       case 'TOO_MANY_ATTEMPTS_TRY_LATER':
         errorMessage = 'عدد محاولات كثيرة. الرجاء المحاولة لاحقًا.';
         statusCode = 429;
+        break;
+      case 'INVALID_ID_TOKEN':
+        errorMessage = 'انتهت صلاحية الجلسة. الرجاء تسجيل الدخول مرة أخرى.';
+        statusCode = 401;
         break;
     }
 
