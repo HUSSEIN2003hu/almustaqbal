@@ -118,7 +118,8 @@
                 <div v-if="selectedCourse && selectedEpisode" class="mb-6 relative">
                     <!-- Video Player -->
                     <div class="bg-slate-800 rounded-lg overflow-hidden relative aspect-video">
-                        <div ref="videoContainer" class="video-container relative w-full h-full">
+                        <div ref="videoContainer" class="video-container relative w-full h-full"
+                            @click="handleVideoClick">
                             <div v-if="userStore.isLoggedIn"
                                 class="absolute watermark-text text-white text-opacity-70 select-none pointer-events-none">
                                 {{ userStore.username }} <br> {{ userStore.email }} </div>
@@ -437,27 +438,9 @@ onMounted(async () => {
                 if (firstPart && firstPart.id) {
                     openParts.value[firstPart.id] = true;
 
-                    // Auto-select first episode if it exists
-                    if (Array.isArray(firstPart.episodes) && firstPart.episodes.length > 0) {
-                        const firstEpisode = firstPart.episodes[0];
-                        if (firstEpisode) {
-                            selectedCourse.value = firstCourse;
-                            selectedPart.value = firstPart;
-
-                            // Only select the first episode if it's free or user has access
-                            if (canAccessEpisode(firstCourse.id, firstEpisode)) {
-                                selectedEpisode.value = firstEpisode;
-
-                                // Check if we need to load video URL from API or if we already have it
-                                if (firstEpisode.link) {
-                                    currentVideoUrl.value = firstEpisode.link;
-                                } else if (canAccessEpisode(firstCourse.id, firstEpisode)) {
-                                    // If we don't have the link but user should have access, fetch it
-                                    loadVideoUrl(firstCourse.id, firstEpisode.id);
-                                }
-                            }
-                        }
-                    }
+                    // Set the course and part but don't auto-select episode
+                    selectedCourse.value = firstCourse;
+                    selectedPart.value = firstPart;
                 }
             }
         }
@@ -612,29 +595,9 @@ function selectTeacher(teacherId) {
             openParts.value = {};
             openParts.value[firstPart.id] = true;
 
-            // Auto-select first episode if exists and user can access it
-            if (Array.isArray(firstPart.episodes) && firstPart.episodes.length > 0) {
-                const firstEpisode = firstPart.episodes[0];
-                if (firstEpisode) {
-                    selectedCourse.value = course;
-                    selectedPart.value = firstPart;
-
-                    // Only select the episode if user has access
-                    if (canAccessEpisode(course.id, firstEpisode)) {
-                        selectedEpisode.value = firstEpisode;
-
-                        // Check if we already have the link in the episode data
-                        if (firstEpisode.link) {
-                            currentVideoUrl.value = firstEpisode.link;
-                            isLoadingVideo.value = false;
-                            videoError.value = null;
-                        } else {
-                            // Otherwise, fetch it from the API
-                            loadVideoUrl(course.id, firstEpisode.id);
-                        }
-                    }
-                }
-            }
+            // Set the course and part but don't auto-select episode
+            selectedCourse.value = course;
+            selectedPart.value = firstPart;
         }
     }
 
@@ -707,29 +670,85 @@ function isActive(courseId, partId, episodeId) {
         selectedEpisode.value?.id === episodeId;
 }
 
-function toggleFullscreen() {
-    if (currentVideoUrl.value) {
-        if (!isFullscreen.value) {
-            // Enter fullscreen mode
-            if (videoContainer.value) {
-                videoContainer.value.requestFullscreen();
-            }
-        } else {
-            // Exit fullscreen mode
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            }
-        }
-        isFullscreen.value = !isFullscreen.value;
+// Add new function for video click handling
+function handleVideoClick(event) {
+    // Only handle clicks on the video container itself, not its children
+    if (event.target === videoContainer.value) {
+        toggleFullscreen();
     }
 }
 
+// Simplify the toggleFullscreen function
+function toggleFullscreen() {
+    if (!currentVideoUrl.value) return;
+
+    const element = videoContainer.value;
+    if (!element) return;
+
+    // Check if we're on a mobile device
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    if (!isFullscreen.value) {
+        // Enter fullscreen
+        if (isMobile) {
+            // For mobile devices, use a simpler approach
+            element.classList.add('mobile-fullscreen');
+            document.body.style.overflow = 'hidden';
+
+            // Try to force landscape
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(() => { });
+            }
+        } else {
+            // For desktop browsers
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.webkitRequestFullscreen) {
+                element.webkitRequestFullscreen();
+            } else if (element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+            } else if (element.msRequestFullscreen) {
+                element.msRequestFullscreen();
+            }
+        }
+    } else {
+        // Exit fullscreen
+        if (isMobile) {
+            element.classList.remove('mobile-fullscreen');
+            document.body.style.overflow = '';
+
+            if (screen.orientation && screen.orientation.unlock) {
+                screen.orientation.unlock();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+    }
+    isFullscreen.value = !isFullscreen.value;
+}
+
+// Update the handleFullscreenChange function
 function handleFullscreenChange() {
-    // Update fullscreen state based on document.fullscreenElement
-    isFullscreen.value = !!document.fullscreenElement ||
-        !!document.webkitFullscreenElement ||
-        !!document.mozFullScreenElement ||
-        !!document.msFullscreenElement;
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    if (isMobile) {
+        isFullscreen.value = videoContainer.value?.classList.contains('mobile-fullscreen');
+    } else {
+        isFullscreen.value = !!(
+            document.fullscreenElement ||
+            document.webkitFullscreenElement ||
+            document.mozFullScreenElement ||
+            document.msFullscreenElement
+        );
+    }
 }
 </script>
 
@@ -817,21 +836,26 @@ html {
 /* Custom fullscreen button */
 button.custom-fullscreen {
     position: absolute;
-    bottom: 15px;
-    right: 15px;
+    bottom: 20px;
+    right: 20px;
     z-index: 1000;
     background: rgba(0, 0, 0, 0.6);
     color: white;
     border: none;
-    border-radius: 4px;
-    padding: 8px 12px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
+    font-size: 20px;
 }
 
 button.custom-fullscreen:hover {
     background: rgba(0, 0, 0, 0.8);
-    transform: scale(1.05);
+    transform: scale(1.1);
 }
 
 /* Optimized swiper containers */
@@ -935,9 +959,57 @@ button.custom-fullscreen:hover {
 /* Mobile-specific styles */
 @media (max-width: 1024px) {
     .video-container {
-        aspect-ratio: 16/9;
+        position: relative;
         width: 100%;
-        height: auto;
+        height: 100%;
+        background: #000;
+    }
+
+    .video-container:-webkit-full-screen,
+    .video-container:-moz-full-screen,
+    .video-container:-ms-fullscreen,
+    .video-container:fullscreen {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 9999;
+    }
+
+    /* Hide other elements when in fullscreen on mobile */
+    .video-container:-webkit-full-screen~*,
+    .video-container:-moz-full-screen~*,
+    .video-container:-ms-fullscreen~*,
+    .video-container:fullscreen~* {
+        display: none;
+    }
+
+    /* Custom fullscreen button for mobile */
+    button.custom-fullscreen {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 20px;
+    }
+
+    button.custom-fullscreen:hover {
+        background: rgba(0, 0, 0, 0.8);
+        transform: scale(1.1);
     }
 
     .watermark-text {
@@ -978,5 +1050,23 @@ button.custom-fullscreen:hover {
 /* Smooth course selection transitions */
 [class*="cursor-pointer"] {
     transition: all 0.3s ease;
+}
+
+/* Ensure iframe fills container in fullscreen */
+.video-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Mobile fullscreen styles */
+.mobile-fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 9999 !important;
+    background: #000 !important;
 }
 </style>

@@ -250,7 +250,6 @@ const handleRegister = async () => {
                 email: email.value,
                 password: password.value,
             });
-            debugger
             if (response.data.success) {
                 useUserStore().login(response.data.user);
                 router.push('/')
