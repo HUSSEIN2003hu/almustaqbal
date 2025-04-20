@@ -1,111 +1,117 @@
 <template>
   <div class="flex justify-center h-0">
-    <div class="navbar shadow-sm fixed z-50 container top-4 rounded-xl transition-colors duration-300 bg-tertiary"
-      style="color: azure;"
-      :class="['navbar', 'shadow-sm', 'fixed', 'z-50', 'container', 'top-4', 'rounded-xl', userStore.isLoggedIn ? 'bg-tertiary' : 'bg-red-500']">
+    <div class="navbar shadow-sm fixed z-50 container top-4 rounded-xl transition-colors duration-300 bg-tertiary "
+      style="color: azure; border-width: 8px;  border-color: transparent;    border-radius: 1.2rem !important /* 12px */;">
 
       <!-- Left Section -->
       <div class="navbar-start">
-        <div class="dropdown">
-          <div tabindex="0" role="button" class="btn btn-ghost lg:hidden text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
-            </svg>
-          </div>
-          <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow rounded-box w-64 bg-tertiary">
-            <li>
-              <NuxtLink
-                class="text-xl mb-4 hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
-                to="/">الصفحة الرئيسية</NuxtLink>
-            </li>
-            <li>
-              <NuxtLink
-                class="text-xl mb-4 hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
-                to="/my-courses">الدورات التدريسية</NuxtLink>
-            </li>
-            <li>
-              <NuxtLink
-                class="text-xl mb-4 hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
-                to="/#teachers">الأساتذة</NuxtLink>
-            </li>
-            <li>
-              <NuxtLink
-                class="text-xl mb-4 hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
-                to="/#code">رمز التفعيل</NuxtLink>
-            </li>
-            <!-- Admin dropdown for mobile -->
-            <li v-if="userStore.isAdmin" class="menu-submenu text-xl mb-4 mt-4">
-              <span
-                class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200 inline-block">لوحة
-                المسؤول</span>
-              <ul class="pl-4 mt-2 space-y-2">
-                <li>
-                  <NuxtLink
-                    class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200 inline-block"
-                    to="/admin">لوحة التحكم</NuxtLink>
-                </li>
-                <li>
-                  <NuxtLink
-                    class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200 inline-block"
-                    to="/admin/users">إدارة طلاب </NuxtLink>
-                </li>
-                <li>
-                  <NuxtLink
-                    class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200 inline-block"
-                    to="/admin/courses">إدارة الدورات</NuxtLink>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </div>
+        <button @click="isMenuOpen = !isMenuOpen" class="btn btn-ghost lg:hidden text-white">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+          </svg>
+        </button>
         <NuxtLink to="/" class="">
           <img src="/assess/img/logo.svg" alt="logo" load="lazy">
         </NuxtLink>
       </div>
 
-      <!-- Center Section -->
+      <!-- Mobile Menu -->
+      <div :class="['lg:hidden fixed inset-0 transform', isMenuOpen ? 'translate-x-0' : 'translate-x-full']"
+        class="transition-transform duration-300 ease-in-out z-40">
+        <div class="bg-tertiary h-full w-64 float-right p-4 mt-4 rounded-xl shadow-lg">
+          <div class="flex justify-end">
+            <button @click="isMenuOpen = false" class="btn btn-ghost text-white">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <ul class="menu menu-vertical gap-2">
+            <li>
+              <NuxtLink @click="isMenuOpen = false"
+                class="text-xl mb-4 hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
+                to="/">الصفحة الرئيسية</NuxtLink>
+            </li>
+            <li>
+              <NuxtLink @click="isMenuOpen = false"
+                class="text-xl mb-4 hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
+                to="/my-courses">الدورات التدريسية</NuxtLink>
+            </li>
+            <li>
+              <NuxtLink @click="isMenuOpen = false"
+                class="text-xl mb-4 hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
+                to="/#teachers">الأساتذة</NuxtLink>
+            </li>
+            <li>
+              <NuxtLink @click="isMenuOpen = false"
+                class="text-xl mb-4 hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
+                to="/#code">رمز التفعيل</NuxtLink>
+            </li>
+            <!-- Admin Links -->
+            <template v-if="userStore.isAdmin">
+              <li class="text-xl font-bold mt-4 mb-2">لوحة المسؤول</li>
+              <li>
+                <NuxtLink @click="isMenuOpen = false"
+                  class="text-lg hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
+                  to="/admin">لوحة التحكم</NuxtLink>
+              </li>
+              <li>
+                <NuxtLink @click="isMenuOpen = false"
+                  class="text-lg hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
+                  to="/admin/users">إدارة طلاب</NuxtLink>
+              </li>
+              <li>
+                <NuxtLink @click="isMenuOpen = false"
+                  class="text-lg hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
+                  to="/admin/courses">إدارة الدورات</NuxtLink>
+              </li>
+            </template>
+          </ul>
+        </div>
+        <div class="bg-black bg-opacity-50 h-full flex-1" @click="isMenuOpen = false"></div>
+      </div>
+
+      <!-- Desktop Menu -->
       <div class="navbar-center hidden lg:flex">
         <ul class="menu menu-horizontal px-1 gap-4 text-white">
           <li>
             <NuxtLink to="/" class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200">
-              الصفحة
-              الرئيسية</NuxtLink>
+              الصفحة الرئيسية</NuxtLink>
           </li>
           <li>
             <NuxtLink to="/my-courses"
-              class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200">الدورات
-              التدريسية </NuxtLink>
+              class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200">
+              الدورات التدريسية</NuxtLink>
           </li>
           <li>
             <NuxtLink to="/#teachers"
-              class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200">الأساتذة</NuxtLink>
+              class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200">
+              الأساتذة</NuxtLink>
           </li>
           <li>
             <NuxtLink to="/#code"
-              class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200">رمز
-              التدريسية</NuxtLink>
+              class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200">
+              رمز التدريسية</NuxtLink>
           </li>
-          <!-- Admin dropdown menu -->
-          <li v-if="userStore.isAdmin" class="dropdown">
-            <div tabindex="0" class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200"
-              role="button">
-              لوحة المسؤول</div>
-            <ul tabindex="0" class="dropdown-content z-[10] top-9 p-2 shadow bg-tertiary rounded-box w-52">
-              <li>
-                <NuxtLink to="/admin" class="hover:bg-red hover:text-white block px-4 py-2 rounded">لوحة التحكم
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink to="/admin/users" class="hover:bg-red hover:text-white block px-4 py-2 rounded">إدارة
-                  طلاب  </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink to="/admin/courses" class="hover:bg-red hover:text-white block px-4 py-2 rounded">إدارة
-                  الدورات</NuxtLink>
-              </li>
-            </ul>
-          </li>
+          <!-- Admin Links -->
+          <template v-if="userStore.isAdmin">
+            <li>
+              <NuxtLink to="/admin"
+                class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200">
+                لوحة التحكم</NuxtLink>
+            </li>
+            <li>
+              <NuxtLink to="/admin/users"
+                class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200">
+                إدارة طلاب</NuxtLink>
+            </li>
+            <li>
+              <NuxtLink to="/admin/courses"
+                class="hover:bg-red hover:text-white px-3 py-1 rounded transition-colors duration-200">
+                إدارة الدورات</NuxtLink>
+            </li>
+          </template>
         </ul>
       </div>
 
@@ -137,13 +143,13 @@
   </div>
 </template>
 
-
 <script setup>
 import { useUserStore } from '~/stores/auth';
 import { watch, ref, onMounted } from 'vue';
 
 const userStore = useUserStore();
 const showWelcomeMessage = ref(false);
+const isMenuOpen = ref(false);
 
 onMounted(() => {
   if (userStore.isLoggedIn) {
